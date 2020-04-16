@@ -13,12 +13,15 @@ namespace One_Night_Ultimate_Werewolf
     public partial class Menu : Form
     {
         public static string game = "One Night Ultimate Werewolf";
+        private Button connect;
+        private Button host;
+        private LinkLabel howto;
         public Menu()
         {
             this.Size = new Size(500, 500);
             this.Text = game + " - Menu";
 
-            Button connect = new Button
+            connect = new Button
             {
                 Size = new Size(200, 100),
                 Location = new Point(150, 100),
@@ -27,7 +30,7 @@ namespace One_Night_Ultimate_Werewolf
             connect.Click += ConnectClick;
             Controls.Add(connect);
 
-            Button host = new Button
+            host = new Button
             {
                 Size = new Size(200, 100),
                 Location = new Point(150, 300),
@@ -35,6 +38,15 @@ namespace One_Night_Ultimate_Werewolf
             };
             host.Click += HostClick;
             Controls.Add(host);
+
+            howto = new LinkLabel
+            {
+                Size = new Size(100, 50),
+                Location = new Point(220, 415),
+                Text = "How to play"
+            };
+            howto.Click += HowtoClick;
+            Controls.Add(howto);
         }
 
         public void ConnectClick(object sender, EventArgs e)
@@ -59,6 +71,19 @@ namespace One_Night_Ultimate_Werewolf
             this.Hide();
             Controls.Clear();
             hostForm.Show();
+        }
+
+        public void HowtoClick(object sender, EventArgs e)
+        {
+            try
+            {
+                howto.LinkVisited = true;
+                System.Diagnostics.Process.Start("https://youtu.be/XsP6LvZQpLk");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unable to open link.");
+            }
         }
     }
 }
