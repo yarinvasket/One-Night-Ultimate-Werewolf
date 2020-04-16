@@ -13,8 +13,8 @@ namespace One_Night_Ultimate_Werewolf
     public partial class Connect : Form
     {
         private Label usernameask;
-        private TextBox username;
-
+        private TextBox usernametext;
+        private string username;
         public Connect()
         {
             usernameask = new Label();
@@ -24,14 +24,14 @@ namespace One_Night_Ultimate_Werewolf
             usernameask.Text = "Please enter username";
             Controls.Add(usernameask);
 
-            username = new TextBox();
-            username.Font = new Font("Arial", 18);
-            username.Text = "Enter username here";
-            username.ForeColor = Color.Gray;
-            username.Size = new Size(300, 0);
-            username.Location = new Point(100, 200);
-            username.Click += UsernameClick;
-            Controls.Add(username);
+            usernametext = new TextBox();
+            usernametext.Font = new Font("Arial", 18);
+            usernametext.Text = "Enter username here";
+            usernametext.ForeColor = Color.Gray;
+            usernametext.Size = new Size(300, 0);
+            usernametext.Location = new Point(100, 200);
+            usernametext.Click += UsernameClick;
+            Controls.Add(usernametext);
 
             Button sub = new Button();
             sub.Text = "Submit";
@@ -43,11 +43,11 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void IP(object sender, EventArgs args)
         {
-            //set username
+            username = usernametext.Text;
             Controls.Remove((Button)sender);
 
-
-            username.Text = "Enter IP here";
+            usernametext.Text = "Enter IP here";
+            usernametext.ForeColor = Color.Gray;
             usernameask.Location = new Point(145, 110);
             usernameask.Text = "Please enter IP";
 
@@ -56,9 +56,14 @@ namespace One_Night_Ultimate_Werewolf
             sub.Location = new Point(190, 275);
             sub.Font = new Font("Arial", 18);
             sub.Size = new Size(100, 70);
-            sub.Click += IP;
+            sub.Click += GotIP;
             Controls.Add(sub);
         }
+        public void GotIP(object sender, EventArgs args)
+        {
+            
+        }
+
         public void UsernameClick(object sender, EventArgs args)
         {
             TextBox username = (TextBox)sender;
@@ -69,11 +74,7 @@ namespace One_Night_Ultimate_Werewolf
             }
             
         }
-        private void InitializeComponent()
-        {
-           
-        }
-
+       
         private void Connect_Load(object sender, EventArgs e)
         {
 
