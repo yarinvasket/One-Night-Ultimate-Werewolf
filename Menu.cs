@@ -16,6 +16,8 @@ namespace One_Night_Ultimate_Werewolf
         private Button connect;
         private Button host;
         private LinkLabel howto;
+        public static int port = 192;
+
         public Menu()
         {
             this.Size = new Size(500, 500);
