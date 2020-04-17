@@ -17,6 +17,7 @@ namespace One_Night_Ultimate_Werewolf
         private Button host;
         private LinkLabel howto;
         public static int port = 192;
+        public static Random random = new Random();
 
         public Menu()
         {
@@ -53,11 +54,13 @@ namespace One_Night_Ultimate_Werewolf
 
         public void ConnectClick(object sender, EventArgs e)
         {
-            Connect connectForm = new Connect();
-            connectForm.StartPosition = FormStartPosition.Manual;
-            connectForm.Location = this.Location;
-            connectForm.Size = this.Size;
-            connectForm.Text = game + " - Connect to server";
+            Connect connectForm = new Connect
+            {
+                StartPosition = FormStartPosition.Manual,
+                Location = this.Location,
+                Size = this.Size,
+                Text = game + " - Connect to server"
+            };
             this.Hide();
             Controls.Clear();
             connectForm.Show();
@@ -65,11 +68,13 @@ namespace One_Night_Ultimate_Werewolf
 
         public void HostClick(object sender, EventArgs e)
         {
-            Host hostForm = new Host();
-            hostForm.StartPosition = FormStartPosition.Manual;
-            hostForm.Location = this.Location;
-            hostForm.Size = this.Size;
-            hostForm.Text = game + " - Server";
+            Host hostForm = new Host
+            {
+                StartPosition = FormStartPosition.Manual,
+                Location = this.Location,
+                Size = this.Size,
+                Text = game + " - Server"
+            };
             this.Hide();
             Controls.Clear();
             hostForm.Show();
