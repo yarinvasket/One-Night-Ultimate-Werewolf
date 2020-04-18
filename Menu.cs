@@ -82,7 +82,6 @@ namespace One_Night_Ultimate_Werewolf
                 Size = this.Size,
                 Text = game + " - Server"
             };
-            hostForm.FormClosing += OnClose;
             this.Hide();
             Controls.Clear();
             hostForm.Show();
