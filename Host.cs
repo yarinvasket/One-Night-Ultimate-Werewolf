@@ -24,7 +24,7 @@ namespace One_Night_Ultimate_Werewolf
 
         public Host()
         {
-            this.FormClosing += Host_FormClosing;
+            this.FormClosing += One_Night_Ultimate_Werewolf.Menu.OnClose;
 
             playerReciever = new Thread(WaitForPlayers);
             playerReciever.Start();
@@ -37,25 +37,20 @@ namespace One_Night_Ultimate_Werewolf
             Controls.Add(console);
         }
 
-        private void Host_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            playerReciever.Abort();
-            Application.Exit();
-        }
-
         public void WaitForPlayers()
         {
-            int data;
             TcpListener listener = new TcpListener(IPAddress.Parse("127.0.0.1"), One_Night_Ultimate_Werewolf.Menu.port);
             listener.Start();
             while (true)
             {
                 TcpClient client = listener.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
+                byte[] bytesToRead = new byte[1];
+                stream.Read(bytesToRead, 0, 1);
+                byte[] bytes = new byte[bytesToRead[0]];
+                stream.Read(bytes, 0, bytes.Length);
+                string name = System.Text.Encoding.UTF8.GetString(bytes);
                 clients.Add(client);
-                byte[] bytes = new byte[1];
-                data = stream.Read(bytes, 0, 1);
-                MessageBox.Show("");
             }
         }
 

@@ -23,9 +23,32 @@ namespace One_Night_Ultimate_Werewolf
         {
             this.username = username;
             this.ip = ip;
-            client = new TcpClient(ip, One_Night_Ultimate_Werewolf.Menu.port);
+            try
+            {
+                client = new TcpClient(ip, One_Night_Ultimate_Werewolf.Menu.port);
+            }
+            catch
+            {
+                DialogResult response = MessageBox.Show("Invalid IP", "Error", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error);
+                if (response.ToString() == "No")
+                {
+                    DialogResult response2 = MessageBox.Show("The IP is invalid, don't no me.", "What do you mean no?", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Exclamation);
+                    if (response2.ToString() == "Ignore")
+                    {
+                        Ohno connectForm = new Ohno();
+                        this.Hide();
+                        Controls.Clear();
+                        connectForm.Show();
+                        return;
+                    }
+                }
+                One_Night_Ultimate_Werewolf.Menu.OnClose(null, null);
+            }
             NetworkStream stream = client.GetStream();
-            stream.Write(new byte[] { 8 }, 0, 1);
+            byte[] bytes = BitConverter.GetBytes(username.Length);
+            stream.Write(bytes, 0, bytes.Length);
+            byte[] name = Encoding.ASCII.GetBytes(username);
+            stream.Write(name, 0, name.Length);
         }
 
         private void Client_Load(object sender, EventArgs e)

@@ -55,7 +55,7 @@ namespace One_Night_Ultimate_Werewolf
 
         public static void OnClose(object sender, FormClosingEventArgs e)
         {
-            Application.Exit();
+            Environment.Exit(Environment.ExitCode);
         }
 
         public void ConnectClick(object sender, EventArgs e)
