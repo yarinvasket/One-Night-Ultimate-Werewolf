@@ -62,16 +62,17 @@ namespace One_Night_Ultimate_Werewolf
 
         public void GotIP(object sender, EventArgs args)
         {
-            Client connectForm = new Client(username, usernametext.Text)
+            Client clientForm = new Client(username, usernametext.Text)
             {
                 StartPosition = FormStartPosition.Manual,
                 Location = this.Location,
                 Size = this.Size,
                 Text = One_Night_Ultimate_Werewolf.Menu.game
             };
+            clientForm.FormClosing += One_Night_Ultimate_Werewolf.Menu.OnClose;
             this.Hide();
             Controls.Clear();
-            connectForm.Show();
+            clientForm.Show();
         }
 
         public void UsernameClick(object sender, EventArgs args)

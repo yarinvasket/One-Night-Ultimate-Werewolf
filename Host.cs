@@ -30,11 +30,13 @@ namespace One_Night_Ultimate_Werewolf
 
         public void WaitForPlayers()
         {
+            int data;
             while (true)
             {
                 TcpClient client = server.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
                 clients.Add(client);
+                data = stream.Read(new byte[] { 8 }, 0, 1);
             }
         }
 

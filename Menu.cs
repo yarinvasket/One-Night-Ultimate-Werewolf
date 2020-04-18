@@ -23,6 +23,7 @@ namespace One_Night_Ultimate_Werewolf
         {
             this.Size = new Size(500, 500);
             this.Text = game + " - Menu";
+            this.FormClosing += OnClose;
 
             connect = new Button
             {
@@ -52,6 +53,11 @@ namespace One_Night_Ultimate_Werewolf
             Controls.Add(howto);
         }
 
+        public static void OnClose(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
+
         public void ConnectClick(object sender, EventArgs e)
         {
             Connect connectForm = new Connect
@@ -61,6 +67,7 @@ namespace One_Night_Ultimate_Werewolf
                 Size = this.Size,
                 Text = game + " - Connect to server"
             };
+            connectForm.FormClosing += OnClose;
             this.Hide();
             Controls.Clear();
             connectForm.Show();
@@ -75,6 +82,7 @@ namespace One_Night_Ultimate_Werewolf
                 Size = this.Size,
                 Text = game + " - Server"
             };
+            hostForm.FormClosing += OnClose;
             this.Hide();
             Controls.Clear();
             hostForm.Show();
