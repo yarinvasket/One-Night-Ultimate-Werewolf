@@ -34,6 +34,7 @@ namespace One_Night_Ultimate_Werewolf
             {
                 TcpClient client = server.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
+                clients.Add(client);
             }
         }
 

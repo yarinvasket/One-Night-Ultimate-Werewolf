@@ -18,9 +18,9 @@ namespace One_Night_Ultimate_Werewolf
         public Connect()
         {
             usernameask = new Label();
-            usernameask.Font = new Font("Arial",18);
+            usernameask.Font = new Font("Arial", 18);
             usernameask.Location = new Point(115, 110);
-            usernameask.Size = new Size(1000,30);
+            usernameask.Size = new Size(1000, 30);
             usernameask.Text = "Please enter username";
             Controls.Add(usernameask);
 
@@ -51,7 +51,7 @@ namespace One_Night_Ultimate_Werewolf
             usernameask.Location = new Point(145, 110);
             usernameask.Text = "Please enter IP";
 
-            Button sub = new Button();            
+            Button sub = new Button();
             sub.Text = "Submit";
             sub.Location = new Point(190, 275);
             sub.Font = new Font("Arial", 18);
@@ -59,22 +59,32 @@ namespace One_Night_Ultimate_Werewolf
             sub.Click += GotIP;
             Controls.Add(sub);
         }
+
         public void GotIP(object sender, EventArgs args)
         {
-            
+            Client connectForm = new Client(username, usernametext.Text)
+            {
+                StartPosition = FormStartPosition.Manual,
+                Location = this.Location,
+                Size = this.Size,
+                Text = One_Night_Ultimate_Werewolf.Menu.game
+            };
+            this.Hide();
+            Controls.Clear();
+            connectForm.Show();
         }
 
         public void UsernameClick(object sender, EventArgs args)
         {
             TextBox username = (TextBox)sender;
-            if (username.Text== "Enter username here"|| username.Text == "Enter IP here")
+            if (username.Text == "Enter username here" || username.Text == "Enter IP here")
             {
                 username.Text = "";
                 username.ForeColor = Color.Black;
             }
-            
+
         }
-       
+
         private void Connect_Load(object sender, EventArgs e)
         {
 

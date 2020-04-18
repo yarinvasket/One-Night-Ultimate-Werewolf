@@ -13,11 +13,14 @@ namespace One_Night_Ultimate_Werewolf
     public partial class Client : Form
     {
         private string username;
+        private string ip;
         private Label card;
         private int clientid;
-        public Client()
+
+        public Client(string username, string ip)
         {
-            
+            this.username = username;
+            this.ip = ip;
         }
 
         private void Client_Load(object sender, EventArgs e)
