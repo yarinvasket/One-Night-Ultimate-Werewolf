@@ -35,8 +35,14 @@ namespace One_Night_Ultimate_Werewolf
                     DialogResult response2 = MessageBox.Show("The IP is invalid, don't no me.", "What do you mean no?", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Exclamation);
                     if (response2.ToString() == "Ignore")
                     {
-                        Ohno connectForm = new Ohno();
+                        Ohno connectForm = new Ohno
+                        {
+                            StartPosition = FormStartPosition.Manual,
+                            Location = this.Location
+                        };
                         this.Hide();
+                        this.WindowState = FormWindowState.Minimized;
+                        this.ShowInTaskbar = false;
                         Controls.Clear();
                         connectForm.Show();
                         return;
