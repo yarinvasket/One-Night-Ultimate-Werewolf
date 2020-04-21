@@ -24,7 +24,6 @@ namespace One_Night_Ultimate_Werewolf
             this.BackColor = Color.FromName("Black");
             this.FormClosing += Ohno_FormClosing;
             this.Shown += Ohno_Shown;
-            this.Location = new Point(960, 540);
             label.Font = new Font("Arial", 42);
             label.Size = new Size(200, 200);
             label.Location = new Point(25, 25);
@@ -85,8 +84,8 @@ namespace One_Night_Ultimate_Werewolf
 
         public void Move(Form form)
         {
-            int changeX = One_Night_Ultimate_Werewolf.Menu.random.Next(0, 2) == 0 ? -2 : 2;
-            int changeY = One_Night_Ultimate_Werewolf.Menu.random.Next(0, 2) == 0 ? -2 : 2;
+            int changeX = One_Night_Ultimate_Werewolf.Menu.random.Next(0, 2) == 0 ? -5 : 5;
+            int changeY = One_Night_Ultimate_Werewolf.Menu.random.Next(0, 2) == 0 ? -5 : 5;
             form.Location = new Point(form.Location.X + changeX, form.Location.Y + changeY);
         }
     }
