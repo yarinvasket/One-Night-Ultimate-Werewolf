@@ -51,8 +51,6 @@ namespace One_Night_Ultimate_Werewolf
                 One_Night_Ultimate_Werewolf.Menu.OnClose(null, null);
             }
             NetworkStream stream = client.GetStream();
-            byte[] bytes = BitConverter.GetBytes(username.Length);
-            stream.Write(bytes, 0, bytes.Length);
             byte[] name = Encoding.ASCII.GetBytes(username);
             stream.Write(name, 0, name.Length);
         }

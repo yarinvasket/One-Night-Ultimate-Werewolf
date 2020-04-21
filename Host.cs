@@ -18,13 +18,15 @@ namespace One_Night_Ultimate_Werewolf
     public partial class Host : Form
     {
         private string ip = new WebClient().DownloadString("http://icanhazip.com");
-        private List<TcpClient> clients = new List<TcpClient>();
+        private TcpListener listener;
+        private List<Player> players = new List<Player>();
         private TextBox console;
         private Thread playerReciever;
 
         public Host()
         {
             this.FormClosing += One_Night_Ultimate_Werewolf.Menu.OnClose;
+            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), One_Night_Ultimate_Werewolf.Menu.port);
 
             playerReciever = new Thread(WaitForPlayers);
             playerReciever.Start();
@@ -39,18 +41,15 @@ namespace One_Night_Ultimate_Werewolf
 
         public void WaitForPlayers()
         {
-            TcpListener listener = new TcpListener(IPAddress.Parse("127.0.0.1"), One_Night_Ultimate_Werewolf.Menu.port);
             listener.Start();
             while (true)
             {
                 TcpClient client = listener.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
-                byte[] bytesToRead = new byte[1];
-                stream.Read(bytesToRead, 0, 1);
-                byte[] bytes = new byte[bytesToRead[0]];
-                stream.Read(bytes, 0, bytes.Length);
-                string name = System.Text.Encoding.UTF8.GetString(bytes);
-                clients.Add(client);
+                byte[] data = new byte[256];
+                int bytes = stream.Read(data, 0, data.Length);
+                string name = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
+                players.Add(new Player(client, stream, name));
             }
         }
 
