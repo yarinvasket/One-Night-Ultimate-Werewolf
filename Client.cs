@@ -55,10 +55,6 @@ namespace One_Night_Ultimate_Werewolf
             stream.Write(name, 0, name.Length);
         }
 
-        private void Client_Load(object sender, EventArgs e)
-        {
-
-        }
         public void SetUsername(string username)
         {
             this.username = username;

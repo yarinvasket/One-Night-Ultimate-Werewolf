@@ -15,21 +15,26 @@ namespace One_Night_Ultimate_Werewolf
         private Label usernameask;
         private TextBox usernametext;
         private string username;
+
         public Connect()
         {
-            usernameask = new Label();
-            usernameask.Font = new Font("Arial", 18);
-            usernameask.Location = new Point(115, 110);
-            usernameask.Size = new Size(1000, 30);
-            usernameask.Text = "Please enter username";
+            usernameask = new Label
+            {
+                Font = new Font("Arial", 18),
+                Location = new Point(115, 110),
+                Size = new Size(1000, 30),
+                Text = "Please enter username"
+            };
             Controls.Add(usernameask);
 
-            usernametext = new TextBox();
-            usernametext.Font = new Font("Arial", 18);
-            usernametext.Text = "Enter username here";
-            usernametext.ForeColor = Color.Gray;
-            usernametext.Size = new Size(300, 0);
-            usernametext.Location = new Point(100, 200);
+            usernametext = new TextBox
+            {
+                Font = new Font("Arial", 18),
+                Text = "Enter username here",
+                ForeColor = Color.Gray,
+                Size = new Size(300, 0),
+                Location = new Point(100, 200)
+            };
             usernametext.Click += UsernameClick;
             Controls.Add(usernametext);
 
@@ -41,6 +46,7 @@ namespace One_Night_Ultimate_Werewolf
             sub.Click += IP;
             Controls.Add(sub);
         }
+
         public void IP(object sender, EventArgs args)
         {
             username = usernametext.Text;
@@ -51,11 +57,13 @@ namespace One_Night_Ultimate_Werewolf
             usernameask.Location = new Point(145, 110);
             usernameask.Text = "Please enter IP";
 
-            Button sub = new Button();
-            sub.Text = "Submit";
-            sub.Location = new Point(190, 275);
-            sub.Font = new Font("Arial", 18);
-            sub.Size = new Size(100, 70);
+            Button sub = new Button
+            {
+                Text = "Submit",
+                Location = new Point(190, 275),
+                Font = new Font("Arial", 18),
+                Size = new Size(100, 70)
+            };
             sub.Click += GotIP;
             Controls.Add(sub);
         }
@@ -83,11 +91,6 @@ namespace One_Night_Ultimate_Werewolf
                 username.Text = "";
                 username.ForeColor = Color.Black;
             }
-
-        }
-
-        private void Connect_Load(object sender, EventArgs e)
-        {
 
         }
     }

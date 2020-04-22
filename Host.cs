@@ -29,17 +29,48 @@ namespace One_Night_Ultimate_Werewolf
         {
             this.FormClosing += One_Night_Ultimate_Werewolf.Menu.OnClose;
             listener = new TcpListener(IPAddress.Parse("127.0.0.1"), One_Night_Ultimate_Werewolf.Menu.port);
+            console = new TextBox
+            {
+                Location = new Point(60, 25),
+                Size = new Size(600, 750),
+                Enabled = false,
+                Multiline = true,
+                Font = new Font("Arial", 21)
+            };
+            Controls.Add(console);
+
+            Label IPLabel = new Label
+            {
+                Size = new Size(250, 40),
+                Text = "Server IP:",
+                Location = new Point(60, 805),
+                Font = new Font("Arial", 32)
+            };
+            Controls.Add(IPLabel);
+
+            TextBox IPBox = new TextBox
+            {
+                Text = ip,
+                Location = new Point(313, 805),
+                Font = new Font("Arial", 32),
+                Size = new Size(350, 40)
+            };
+            Controls.Add(IPBox);
+
+            Button startGame = new Button();
+            startGame.Text = "Start Game";
+            startGame.Location = new Point(325, 875);
+            startGame.Size = new Size(100, 50);
+            startGame.Click += StartGame_Click;
+            Controls.Add(startGame);
 
             playerReciever = new Thread(WaitForPlayers);
             playerReciever.Start();
-            console = new TextBox
-            {
-                Location = new Point(25, 25),
-                Size = new Size(400, 750),
-                Enabled = false,
-                Multiline = true
-            };
-            Controls.Add(console);
+        }
+
+        private void StartGame_Click(object sender, EventArgs e)
+        {
+            Controls.RemoveAt(Controls.Count - 1);
         }
 
         public void WaitForPlayers()

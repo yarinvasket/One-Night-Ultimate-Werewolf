@@ -78,8 +78,8 @@ namespace One_Night_Ultimate_Werewolf
             Host hostForm = new Host
             {
                 StartPosition = FormStartPosition.Manual,
-                Location = this.Location,
-                Size = this.Size,
+                Location = new Point(this.Location.X, 0),
+                Size = new Size(750, 1000),
                 Text = game + " - Server"
             };
             this.Hide();
