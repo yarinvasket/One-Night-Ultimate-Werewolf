@@ -28,7 +28,7 @@ namespace One_Night_Ultimate_Werewolf
         public Host()
         {
             this.FormClosing += One_Night_Ultimate_Werewolf.Menu.OnClose;
-            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), One_Night_Ultimate_Werewolf.Menu.port);
+            listener = new TcpListener(IPAddress.Parse("0.0.0.0"), One_Night_Ultimate_Werewolf.Menu.port);
             console = new TextBox
             {
                 Location = new Point(60, 25),
