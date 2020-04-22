@@ -15,6 +15,8 @@ using System.Windows.Forms;
 
 namespace One_Night_Ultimate_Werewolf
 {
+    public delegate void AddTextDelegate(Control control, string text);
+
     public partial class Host : Form
     {
         private string ip = new WebClient().DownloadString("http://icanhazip.com");
@@ -33,8 +35,9 @@ namespace One_Night_Ultimate_Werewolf
             console = new TextBox
             {
                 Location = new Point(25, 25),
-                Size = new Size(200, 400),
-                Enabled = false
+                Size = new Size(400, 750),
+                Enabled = false,
+                Multiline = true
             };
             Controls.Add(console);
         }
@@ -49,8 +52,14 @@ namespace One_Night_Ultimate_Werewolf
                 byte[] data = new byte[256];
                 int bytes = stream.Read(data, 0, data.Length);
                 string name = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
+                this.Invoke(new AddTextDelegate(AddText), console, name + " joined");
                 players.Add(new Player(client, stream, name));
             }
+        }
+
+        public void AddText(Control control, string text)
+        {
+            control.Text += text + Environment.NewLine;
         }
 
         public static byte[] ObjectToByteArray(object obj)
