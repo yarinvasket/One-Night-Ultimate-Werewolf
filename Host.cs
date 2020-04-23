@@ -72,6 +72,10 @@ namespace One_Night_Ultimate_Werewolf
         {
             playerReciever.Suspend();
             Controls.RemoveAt(Controls.Count - 1);
+            for (int i = 0; i < players.Count; i++)
+            {
+                players[i].stream.Write(new byte[] {(byte)'\0'}, 0, 1);
+            }
             AddText(console, "Game started");
         }
 
@@ -90,6 +94,7 @@ namespace One_Night_Ultimate_Werewolf
                 for (int i = 0; i < players.Count; i++)
                 {
                     names += '\0' + players[i].GetName();
+                    players[i].stream.Write(data, 0, bytes);
                 }
                 byte[] bytesNames = Encoding.ASCII.GetBytes(names);
                 stream.Write(bytesNames, 0, bytesNames.Length);
