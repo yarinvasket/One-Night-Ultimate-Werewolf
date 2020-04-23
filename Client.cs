@@ -53,6 +53,13 @@ namespace One_Night_Ultimate_Werewolf
             NetworkStream stream = client.GetStream();
             byte[] name = Encoding.ASCII.GetBytes(username);
             stream.Write(name, 0, name.Length);
+
+            byte[] bytes = new byte[1024];
+            int length = stream.Read(bytes, 0, bytes.Length);
+            string str = System.Text.Encoding.UTF8.GetString(bytes, 0, length);
+            str = str.Substring(1);
+            string[] names = str == "" ? new string[0] : str.Split('\0');
+            bool a = false;
         }
 
         public void SetUsername(string username)

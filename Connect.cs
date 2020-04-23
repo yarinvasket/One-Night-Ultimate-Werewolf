@@ -70,7 +70,7 @@ namespace One_Night_Ultimate_Werewolf
 
         public void GotIP(object sender, EventArgs args)
         {
-            Client clientForm = new Client(username, usernametext.Text)
+            Client clientForm = new Client(username, RemoveCharacters(usernametext.Text))
             {
                 StartPosition = FormStartPosition.Manual,
                 Location = this.Location,
@@ -81,6 +81,16 @@ namespace One_Night_Ultimate_Werewolf
             this.Hide();
             Controls.Clear();
             clientForm.Show();
+        }
+
+        private static string RemoveCharacters(string str)
+        {
+            string output = "";
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] != '\n') output += str[i];
+            }
+            return output;
         }
 
         public void UsernameClick(object sender, EventArgs args)

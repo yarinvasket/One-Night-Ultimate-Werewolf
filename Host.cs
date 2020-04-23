@@ -70,7 +70,9 @@ namespace One_Night_Ultimate_Werewolf
 
         private void StartGame_Click(object sender, EventArgs e)
         {
+            playerReciever.Suspend();
             Controls.RemoveAt(Controls.Count - 1);
+            AddText(console, "Game started");
         }
 
         public void WaitForPlayers()
@@ -80,10 +82,17 @@ namespace One_Night_Ultimate_Werewolf
             {
                 TcpClient client = listener.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
-                byte[] data = new byte[256];
+                byte[] data = new byte[64];
                 int bytes = stream.Read(data, 0, data.Length);
                 string name = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
                 this.Invoke(new AddTextDelegate(AddText), console, name + " joined");
+                string names = players.Count == 0 ? "\0" : "";
+                for (int i = 0; i < players.Count; i++)
+                {
+                    names += '\0' + players[i].GetName();
+                }
+                byte[] bytesNames = Encoding.ASCII.GetBytes(names);
+                stream.Write(bytesNames, 0, bytesNames.Length);
                 players.Add(new Player(client, stream, name));
             }
         }
