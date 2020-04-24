@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ using System.Windows.Forms;
 
 namespace One_Night_Ultimate_Werewolf
 {
+    public delegate void ClearControlsDelegate();
+
     public partial class Client : Form
     {
         private string username;
@@ -105,7 +108,7 @@ namespace One_Night_Ultimate_Werewolf
                     role = str.Substring(1);
                     players = ReadString(1024).Split('\0').ToList<string>();
                     players.Remove(username);
-                    Controls.Clear();
+                    this.Invoke(new ClearControlsDelegate(Controls.Clear));
                     FormBorderStyle = FormBorderStyle.None;
                     WindowState = FormWindowState.Maximized;
                     break;
@@ -114,6 +117,15 @@ namespace One_Night_Ultimate_Werewolf
                 this.Invoke(new AddTextDelegate(Host.AddText), connectedPlayers, str);
             }
         }
+
+        /*protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F11 && FormBorderStyle == FormBorderStyle.)
+            {
+
+            }
+            return false;
+        }*/
 
         public string ReadString(int byteLength)
         {
