@@ -111,6 +111,13 @@ namespace One_Night_Ultimate_Werewolf
                     this.Invoke(new ClearControlsDelegate(Controls.Clear));
                     FormBorderStyle = FormBorderStyle.None;
                     WindowState = FormWindowState.Maximized;
+
+                    PictureBox card = new PictureBox();
+                    card.Location = new Point(this.Width / 2, -100 + (this.Size.Height));
+                    Image img = StrToImg(role);
+                    card.Image = img;
+                    card.Size = img.Size;
+                    Controls.Add(card);
                     break;
                 }
                 players.Add(str);
@@ -118,15 +125,73 @@ namespace One_Night_Ultimate_Werewolf
             }
         }
 
-        /*protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.F11 && FormBorderStyle == FormBorderStyle.)
+            if (keyData == Keys.F11)
             {
-
+                if (FormBorderStyle == FormBorderStyle.Sizable)
+                {
+                    FormBorderStyle = FormBorderStyle.None;
+                    WindowState = FormWindowState.Maximized;
+                }
+                else
+                {
+                    FormBorderStyle = FormBorderStyle.Sizable;
+                    WindowState = FormWindowState.Normal;
+                }
             }
             return false;
-        }*/
+        }
 
+        public Image StrToImg(string str)
+        {
+            if (str == "Werewolf")
+            {
+                return Properties.Resources.Werewolf;
+            }
+
+            if (str == "Mason")
+            {
+                return Properties.Resources.Mason;
+            }
+
+            if (str == "Drunk")
+            {
+                return Properties.Resources.Drunk;
+            }
+
+            if (str == "Hunter")
+            {
+                return Properties.Resources.Hunter;
+            }
+
+            if (str == "Insomniac")
+            {
+                return Properties.Resources.Insomniac;
+            }
+
+            if (str == "Minion")
+            {
+                return Properties.Resources.Minion;
+            }
+
+            if (str == "Robber")
+            {
+                return Properties.Resources.Robber;
+            }
+
+            if (str == "Seer")
+            {
+                return Properties.Resources.Seer;
+            }
+
+            if (str == "Tanner")
+            {
+                return Properties.Resources.Tanner;
+            }
+
+            return Properties.Resources.Troublemaker;
+        }
         public string ReadString(int byteLength)
         {
             byte[] bytes = new byte[byteLength];
