@@ -21,6 +21,7 @@ namespace One_Night_Ultimate_Werewolf
         private Label card;
         private TcpClient client;
         private NetworkStream stream;
+        private string role;
 
         public Client(string username, string ip)
         {
@@ -75,7 +76,11 @@ namespace One_Night_Ultimate_Werewolf
                 byte[] bytes = new byte[64];
                 int length = stream.Read(bytes, 0, bytes.Length);
                 string str = System.Text.Encoding.UTF8.GetString(bytes, 0, length);
-                if (str == "\0") break;
+                if (str[0] == '\0')
+                {
+                    role = str.Substring(1);
+                    break;
+                }
                 players.Add(str);
             }
         }

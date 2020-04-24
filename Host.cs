@@ -22,6 +22,7 @@ namespace One_Night_Ultimate_Werewolf
         private string ip = new WebClient().DownloadString("http://icanhazip.com");
         private TcpListener listener;
         private List<Player> players = new List<Player>();
+        private string[] deck = {"Villager", "Villager", "Villager", "Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Sear", "Mason", "Mason", "Minion", "Werewolf", "Werewolf", "Werewolf", "Doppelganger"};
         private TextBox console;
         private Thread playerReciever;
 
@@ -29,6 +30,7 @@ namespace One_Night_Ultimate_Werewolf
         {
             this.FormClosing += One_Night_Ultimate_Werewolf.Menu.OnClose;
             listener = new TcpListener(IPAddress.Parse("0.0.0.0"), One_Night_Ultimate_Werewolf.Menu.port);
+            Shuffle<string>(deck);
             console = new TextBox
             {
                 Location = new Point(60, 25),
@@ -74,9 +76,30 @@ namespace One_Night_Ultimate_Werewolf
             Controls.RemoveAt(Controls.Count - 1);
             for (int i = 0; i < players.Count; i++)
             {
-                players[i].stream.Write(new byte[] {(byte)'\0'}, 0, 1);
+                byte[] bytes = Encoding.ASCII.GetBytes('\0' + deck[i]);
+                try
+                {
+                    players[i].stream.Write(bytes, 0, bytes.Length);
+                }
+                catch
+                {
+                    this.Invoke(new AddTextDelegate(AddText), console, players[i].GetName() + " disconnected");
+                    players.RemoveAt(i);
+                    i--;
+                }
             }
             AddText(console, "Game started");
+        }
+
+        public static void Shuffle<T>(T[] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+                int idx = One_Night_Ultimate_Werewolf.Menu.random.Next(i, arr.Length);
+                T temp = arr[i];
+                arr[i] = arr[idx];
+                arr[idx] = temp;
+            }
         }
 
         public void WaitForPlayers()
@@ -94,7 +117,16 @@ namespace One_Night_Ultimate_Werewolf
                 for (int i = 0; i < players.Count; i++)
                 {
                     names += '\0' + players[i].GetName();
-                    players[i].stream.Write(data, 0, bytes);
+                    try
+                    {
+                        players[i].stream.Write(data, 0, bytes);
+                    }
+                    catch
+                    {
+                        this.Invoke(new AddTextDelegate(AddText), console, players[i].GetName() + " disconnected");
+                        players.RemoveAt(i);
+                        i--;
+                    }
                 }
                 byte[] bytesNames = Encoding.ASCII.GetBytes(names);
                 stream.Write(bytesNames, 0, bytesNames.Length);
