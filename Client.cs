@@ -17,8 +17,8 @@ namespace One_Night_Ultimate_Werewolf
     {
         private string username;
         private string ip;
-        private List<string> players = new List<string>();
-        private Label card;
+        List<string> players;
+        private Label connectedPlayers;
         private TcpClient client;
         private NetworkStream stream;
         private string role;
@@ -27,6 +27,23 @@ namespace One_Night_Ultimate_Werewolf
         {
             this.username = username;
             this.ip = ip;
+            Label waiting = new Label
+            {
+                Text = "Waiting for the game to start...\nConnected players:",
+                Font = new Font("Arial", 24),
+                Location = new Point(20, 20),
+                Size = new Size(500, 75)
+            };
+            Controls.Add(waiting);
+
+            connectedPlayers = new Label
+            {
+                Font = new Font("Arial", 16),
+                Location = new Point(20, 125),
+                Size = new Size(100, 600)
+            };
+            Controls.Add(connectedPlayers);
+
             try
             {
                 client = new TcpClient(ip, One_Night_Ultimate_Werewolf.Menu.port);
@@ -62,8 +79,11 @@ namespace One_Night_Ultimate_Werewolf
             int length = stream.Read(bytes, 0, bytes.Length);
             string str = System.Text.Encoding.UTF8.GetString(bytes, 0, length);
             str = str.Substring(1);
-            string[] names = str == "" ? new string[0] : str.Split('\0');
-            players = names.ToList<string>();
+            players = str == "" ? new List<string>() : str.Split('\0').ToList<string>();
+            for (int i = 0; i < players.Count; i++)
+            {
+                Host.AddText(connectedPlayers, players[i]);
+            }
 
             Thread waitUntilGameStarts = new Thread(WaitUntilGameStarts);
             waitUntilGameStarts.Start();
@@ -79,9 +99,14 @@ namespace One_Night_Ultimate_Werewolf
                 if (str[0] == '\0')
                 {
                     role = str.Substring(1);
+                    byte[] bytes2 = new byte[1024];
+                    int length2 = stream.Read(bytes2, 0, bytes2.Length);
+                    players = System.Text.Encoding.UTF8.GetString(bytes2, 0, length2).Split('\0').ToList<string>();
+                    players.Remove(username);
                     break;
                 }
                 players.Add(str);
+                this.Invoke(new AddTextDelegate(Host.AddText), connectedPlayers, str);
             }
         }
 

@@ -22,7 +22,7 @@ namespace One_Night_Ultimate_Werewolf
         private string ip = new WebClient().DownloadString("http://icanhazip.com");
         private TcpListener listener;
         private List<Player> players = new List<Player>();
-        private string[] deck = {"Villager", "Villager", "Villager", "Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Sear", "Mason", "Mason", "Minion", "Werewolf", "Werewolf", "Werewolf", "Doppelganger"};
+        private string[] deck = {"Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Sear", "Mason", "Mason", "Minion", "Werewolf", "Werewolf", "Doppelganger"};
         private TextBox console;
         private Thread playerReciever;
 
@@ -72,8 +72,14 @@ namespace One_Night_Ultimate_Werewolf
 
         private void StartGame_Click(object sender, EventArgs e)
         {
+            if (players.Count < 4)
+            {
+                MessageBox.Show("Needs at least 4 players to start", "Can't start game!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             playerReciever.Suspend();
             Controls.RemoveAt(Controls.Count - 1);
+            int offset = 0;
             for (int i = 0; i < players.Count; i++)
             {
                 byte[] bytes = Encoding.ASCII.GetBytes('\0' + deck[i]);
@@ -83,11 +89,25 @@ namespace One_Night_Ultimate_Werewolf
                 }
                 catch
                 {
-                    this.Invoke(new AddTextDelegate(AddText), console, players[i].GetName() + " disconnected");
+                    this.Invoke(new AddTextDelegate(AddText), console, players[i].name + " disconnected");
                     players.RemoveAt(i);
                     i--;
                 }
             }
+
+            string str = "";
+            for (int i = 0; i < players.Count; i++)
+            {
+                str += players[i].name + '\0';
+            }
+            str = str.Substring(0, str.Length - 1);
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                byte[] bytes = Encoding.ASCII.GetBytes(str);
+                players[i].stream.Write(bytes, offset, bytes.Length);
+            }
+
             AddText(console, "Game started");
         }
 
@@ -116,14 +136,14 @@ namespace One_Night_Ultimate_Werewolf
                 string names = players.Count == 0 ? "\0" : "";
                 for (int i = 0; i < players.Count; i++)
                 {
-                    names += '\0' + players[i].GetName();
+                    names += '\0' + players[i].name;
                     try
                     {
                         players[i].stream.Write(data, 0, bytes);
                     }
                     catch
                     {
-                        this.Invoke(new AddTextDelegate(AddText), console, players[i].GetName() + " disconnected");
+                        this.Invoke(new AddTextDelegate(AddText), console, players[i].name + " disconnected");
                         players.RemoveAt(i);
                         i--;
                     }
@@ -134,7 +154,7 @@ namespace One_Night_Ultimate_Werewolf
             }
         }
 
-        public void AddText(Control control, string text)
+        public static void AddText(Control control, string text)
         {
             control.Text += text + Environment.NewLine;
         }
