@@ -37,18 +37,18 @@ namespace One_Night_Ultimate_Werewolf
             Controls.Add(waiting);
             Label you = new Label
             {
-                Text = "YOU - "+username,
+                Text = "YOU - " + username,
                 ForeColor = Color.Red,
                 Font = new Font("Arial", 20),
-                Location = new Point(20,100),
-                Size = new Size(500, 75)
+                Location = new Point(20, 100),
+                Size = new Size(500, 30)
             };
             Controls.Add(you);
 
             connectedPlayers = new Label
             {
                 Font = new Font("Arial", 16),
-                Location = new Point(20, 125),
+                Location = new Point(20, 140),
                 Size = new Size(300, 600)
             };
             Controls.Add(connectedPlayers);
