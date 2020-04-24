@@ -22,7 +22,7 @@ namespace One_Night_Ultimate_Werewolf
         private string ip = new WebClient().DownloadString("http://icanhazip.com");
         private TcpListener listener;
         private List<Player> players = new List<Player>();
-        private string[] deck = {"Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Sear", "Mason", "Mason", "Minion", "Werewolf", "Werewolf", "Doppelganger"};
+        private string[] deck = {"Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Seer", "Mason", "Mason", "Minion", "Werewolf", "Werewolf", "Doppelganger"};
         private TextBox console;
         private Thread playerReciever;
 
@@ -148,10 +148,22 @@ namespace One_Night_Ultimate_Werewolf
                         i--;
                     }
                 }
-                byte[] bytesNames = Encoding.ASCII.GetBytes(names);
-                stream.Write(bytesNames, 0, bytesNames.Length);
+                WriteString(names, stream);
                 players.Add(new Player(client, stream, name));
             }
+        }
+
+        public string ReadString(int byteLength, NetworkStream stream)
+        {
+            byte[] bytes = new byte[byteLength];
+            int length = stream.Read(bytes, 0, bytes.Length);
+            return System.Text.Encoding.UTF8.GetString(bytes, 0, length);
+        }
+
+        public void WriteString(string str, NetworkStream stream)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(str);
+            stream.Write(buffer, 0, buffer.Length);
         }
 
         public static void AddText(Control control, string text)
