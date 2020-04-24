@@ -14,8 +14,7 @@ using System.Windows.Forms;
 
 namespace One_Night_Ultimate_Werewolf
 {
-    public delegate void ClearControlsDelegate();
-
+    public delegate void GameStarted();
     public partial class Client : Form
     {
         private string username;
@@ -108,21 +107,26 @@ namespace One_Night_Ultimate_Werewolf
                     role = str.Substring(1);
                     players = ReadString(1024).Split('\0').ToList<string>();
                     players.Remove(username);
-                    this.Invoke(new ClearControlsDelegate(Controls.Clear));
-                    FormBorderStyle = FormBorderStyle.None;
-                    WindowState = FormWindowState.Maximized;
-
-                    PictureBox card = new PictureBox();
-                    card.Location = new Point(this.Width / 2, -100 + (this.Size.Height));
-                    Image img = StrToImg(role);
-                    card.Image = img;
-                    card.Size = img.Size;
-                    Controls.Add(card);
+                    Invoke(new GameStarted(GameStarts));
                     break;
                 }
                 players.Add(str);
                 this.Invoke(new AddTextDelegate(Host.AddText), connectedPlayers, str);
             }
+        }
+
+        protected virtual void GameStarts()
+        {
+            Controls.Clear();
+            FormBorderStyle = FormBorderStyle.None;
+            WindowState = FormWindowState.Maximized;
+
+            PictureBox card = new PictureBox();
+            card.Location = new Point(this.Width / 2, -100 + (this.Size.Height));
+            Image img = StrToImg(role);
+            card.Image = img;
+            card.Size = img.Size;
+            Controls.Add(card);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
