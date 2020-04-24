@@ -49,7 +49,7 @@ namespace One_Night_Ultimate_Werewolf
             {
                 Font = new Font("Arial", 16),
                 Location = new Point(20, 125),
-                Size = new Size(100, 600)
+                Size = new Size(300, 600)
             };
             Controls.Add(connectedPlayers);
 
@@ -81,12 +81,9 @@ namespace One_Night_Ultimate_Werewolf
                 One_Night_Ultimate_Werewolf.Menu.OnClose(null, null);
             }
             stream = client.GetStream();
-            byte[] name = Encoding.ASCII.GetBytes(username);
-            stream.Write(name, 0, name.Length);
+            WriteString(username);
 
-            byte[] bytes = new byte[1024];
-            int length = stream.Read(bytes, 0, bytes.Length);
-            string str = System.Text.Encoding.UTF8.GetString(bytes, 0, length);
+            string str = ReadString(1024);
             str = str.Substring(1);
             players = str == "" ? new List<string>() : str.Split('\0').ToList<string>();
             for (int i = 0; i < players.Count; i++)
@@ -102,16 +99,15 @@ namespace One_Night_Ultimate_Werewolf
         {
             while (true)
             {
-                byte[] bytes = new byte[64];
-                int length = stream.Read(bytes, 0, bytes.Length);
-                string str = System.Text.Encoding.UTF8.GetString(bytes, 0, length);
+                string str = ReadString(64);
                 if (str[0] == '\0')
                 {
                     role = str.Substring(1);
-                    byte[] bytes2 = new byte[1024];
-                    int length2 = stream.Read(bytes2, 0, bytes2.Length);
-                    players = System.Text.Encoding.UTF8.GetString(bytes2, 0, length2).Split('\0').ToList<string>();
+                    players = ReadString(1024).Split('\0').ToList<string>();
                     players.Remove(username);
+                    Controls.Clear();
+                    FormBorderStyle = FormBorderStyle.None;
+                    WindowState = FormWindowState.Maximized;
                     break;
                 }
                 players.Add(str);
@@ -119,9 +115,17 @@ namespace One_Night_Ultimate_Werewolf
             }
         }
 
-        public void SetUsername(string username)
+        public string ReadString(int byteLength)
         {
-            this.username = username;
+            byte[] bytes = new byte[byteLength];
+            int length = stream.Read(bytes, 0, bytes.Length);
+            return System.Text.Encoding.UTF8.GetString(bytes, 0, length);
+        }
+
+        public void WriteString(string str)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(str);
+            stream.Write(buffer, 0, buffer.Length);
         }
     }
 }
