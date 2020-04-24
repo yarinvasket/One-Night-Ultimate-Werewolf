@@ -25,6 +25,9 @@ namespace One_Night_Ultimate_Werewolf
         private TcpClient client;
         private NetworkStream stream;
         private string role;
+        private PictureBox[] pcards;
+        private int w;
+        private int h;
 
         public Client(string username, string ip)
         {
@@ -111,17 +114,28 @@ namespace One_Night_Ultimate_Werewolf
                     this.Invoke(new ClearControlsDelegate(Controls.Clear));
                     FormBorderStyle = FormBorderStyle.None;
                     WindowState = FormWindowState.Maximized;
-
+                    w = this.Width;
+                    h = this.Height;
                     PictureBox card = new PictureBox();
-                    card.Location = new Point(this.Width / 2, -100 + (this.Size.Height));
-                    Image img = StrToImg(role);
-                    card.Image = img;
-                    card.Size = img.Size;
+                    card.Location = new Point(w / 2, (5*h)/6);
+                    Image img1 = StrToImg(role);
+                    card.Image = img1;
+                    card.Size = img1.Size;
                     Controls.Add(card);
                     break;
                 }
                 players.Add(str);
                 this.Invoke(new AddTextDelegate(Host.AddText), connectedPlayers, str);
+
+                Image img = Properties.Resources.Back;
+                pcards = new PictureBox[players.Count];
+                /*for (int i = 0; i < players.Count; i++)
+                {
+                    pcards[i] = new PictureBox();
+                    pcards[i].Image = img;
+                    pcards[i].Size = img.Size;
+                    pcards[i].Location=new Point()
+                }*/
             }
         }
 
@@ -145,6 +159,7 @@ namespace One_Night_Ultimate_Werewolf
 
         public Image StrToImg(string str)
         {
+            
             if (str == "Werewolf")
             {
                 return Properties.Resources.Werewolf;
