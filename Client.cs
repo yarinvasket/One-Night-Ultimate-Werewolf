@@ -108,13 +108,71 @@ namespace One_Night_Ultimate_Werewolf
                     Controls.Clear();
                     FormBorderStyle = FormBorderStyle.None;
                     WindowState = FormWindowState.Maximized;
+
+
+                    PictureBox card = new PictureBox();
+                    card.Location = new Point(this.Width / 2, -100 + (this.Size.Height));
+                    Image img = StrToImg(role);
+                    card.Image = img;
+                    card.Size = img.Size;
+                    Controls.Add(card);
                     break;
                 }
                 players.Add(str);
                 this.Invoke(new AddTextDelegate(Host.AddText), connectedPlayers, str);
             }
         }
+        public Image StrToImg(string str)
+        {
+            if (str == "Werewolf")
+            {
+                return Properties.Resources.Werewolf;
+            }
 
+            if (str == "Mason")
+            {
+                return Properties.Resources.Mason;
+            }
+
+            if (str == "Drunk")
+            {
+                return Properties.Resources.Drunk;
+            }
+
+            if (str == "Hunter")
+            {
+                return Properties.Resources.Hunter;
+            }
+
+            if (str == "Insomniac")
+            {
+                return Properties.Resources.Insomniac;
+            }
+           
+            if (str == "Minion")
+            {
+                return Properties.Resources.Minion;
+            }
+
+            if (str == "Robber")
+            {
+                return Properties.Resources.Robber;
+            }
+
+            if (str == "Seer")
+            {
+                return Properties.Resources.Seer;
+            }
+
+            if (str == "Tanner")
+            {
+                return Properties.Resources.Tanner;
+            }
+            
+            return Properties.Resources.Troublemaker;            
+
+            
+        }
         public string ReadString(int byteLength)
         {
             byte[] bytes = new byte[byteLength];
