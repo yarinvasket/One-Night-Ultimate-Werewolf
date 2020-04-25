@@ -72,11 +72,11 @@ namespace One_Night_Ultimate_Werewolf
 
         private void StartGame_Click(object sender, EventArgs e)
         {
-            if (players.Count < 4)
+            /*if (players.Count < 4)
             {
                 MessageBox.Show("Needs at least 4 players to start", "Can't start game!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
+            }*/
             playerReciever.Suspend();
             Controls.RemoveAt(Controls.Count - 1);
             int offset = 0;

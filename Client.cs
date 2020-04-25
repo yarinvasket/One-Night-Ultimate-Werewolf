@@ -14,8 +14,7 @@ using System.Windows.Forms;
 
 namespace One_Night_Ultimate_Werewolf
 {
-    public delegate void ClearControlsDelegate();
-
+    public delegate void GameStarted();
     public partial class Client : Form
     {
         private string username;
@@ -111,34 +110,63 @@ namespace One_Night_Ultimate_Werewolf
                     role = str.Substring(1);
                     players = ReadString(1024).Split('\0').ToList<string>();
                     players.Remove(username);
-                    this.Invoke(new ClearControlsDelegate(Controls.Clear));
-                    FormBorderStyle = FormBorderStyle.None;
-                    WindowState = FormWindowState.Maximized;
-                    w = this.Width;
-                    h = this.Height;
-                    PictureBox card = new PictureBox();
-                    card.Location = new Point(w / 2, (5*h)/6);
-                    Image img1 = StrToImg(role);
-                    card.Image = img1;
-                    card.Size = img1.Size;
-                    Controls.Add(card);
+                    Invoke(new GameStarted(GameStarts));
                     break;
                 }
                 players.Add(str);
                 this.Invoke(new AddTextDelegate(Host.AddText), connectedPlayers, str);
 
-                Image img = Properties.Resources.Back;
-                pcards = new PictureBox[players.Count];
-                /*for (int i = 0; i < players.Count; i++)
-                {
-                    pcards[i] = new PictureBox();
-                    pcards[i].Image = img;
-                    pcards[i].Size = img.Size;
-                    pcards[i].Location=new Point()
-                }*/
+               
             }
         }
 
+        protected virtual void GameStarts()
+        {
+            Controls.Clear();
+            FormBorderStyle = FormBorderStyle.None;
+            WindowState = FormWindowState.Maximized;
+
+            w = this.Width;
+            h = this.Height;
+
+            PictureBox card = new PictureBox();
+            Image img = StrToImg(role);
+            img = Resize(img, 2*img.Width/3, 2*img.Height/3);
+            card.Image = img;
+            card.Size = img.Size;            
+            card.Location = new Point(w / 2-card.Size.Width/2, (5 * h) / 6 - card.Size.Height / 2);            
+            Controls.Add(card);
+
+            img = Properties.Resources.Back;
+            img = Resize(img, card.Width, card.Height);
+            int p = players.Count;
+            pcards = new PictureBox[players.Count];
+            for (int i = 0; i < players.Count; i++)
+            {
+                pcards[i] = new PictureBox();
+                pcards[i].Image = img;
+                pcards[i].Size = img.Size;
+                pcards[i].Location = new Point(w/2-pcards[i].Width/2+ (int)(h * Math.Sin(2 * Math.PI * (i + 1) / (p + 1)) / 3), h/2-pcards[i].Height / 2 + (int)(h * Math.Cos(2 * Math.PI * (i + 1) / (p + 1)) / 3));
+                if (pcards[i].Location.X>w/2- pcards[i].Width / 2)
+                {
+                    pcards[i].Location = new Point(pcards[i].Location.X + w / 6, pcards[i].Location.Y);
+                }
+                else if (pcards[i].Location.X < w / 2 - pcards[i].Width / 2)
+                {
+                    pcards[i].Location = new Point(pcards[i].Location.X - w / 6, pcards[i].Location.Y);
+                }
+                Controls.Add(pcards[i]);
+            }
+        }
+        public Image Resize(Image image, int w, int h)
+        {
+            Bitmap bmp = new Bitmap(w, h);
+            Graphics grp = Graphics.FromImage(bmp);
+            grp.DrawImage(image, 0, 0, w, h);
+            grp.Dispose();
+
+            return bmp;
+        }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.F11)
