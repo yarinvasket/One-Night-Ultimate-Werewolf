@@ -25,6 +25,7 @@ namespace One_Night_Ultimate_Werewolf
         private NetworkStream stream;
         private string role;
         private PictureBox[] pcards;
+        private PictureBox[] midcards;
         private int w;
         private int h;
 
@@ -141,6 +142,7 @@ namespace One_Night_Ultimate_Werewolf
             img = Resize(img, card.Width, card.Height);
             int p = players.Count;
             pcards = new PictureBox[players.Count];
+            midcards = new PictureBox[3];
             for (int i = 0; i < players.Count; i++)
             {
                 pcards[i] = new PictureBox();
@@ -156,6 +158,15 @@ namespace One_Night_Ultimate_Werewolf
                     pcards[i].Location = new Point(pcards[i].Location.X - w / 6, pcards[i].Location.Y);
                 }
                 Controls.Add(pcards[i]);
+            }
+
+            for (int i = 0; i < midcards.Length; i++)
+            {
+                midcards[i] = new PictureBox();
+                midcards[i].Image = img;
+                midcards[i].Size = img.Size;
+                midcards[i].Location = new Point(w / 2 -  midcards[i].Width / 2 - w /13 + i * w / 13, h / 2 - midcards[i].Height / 2);
+                Controls.Add(midcards[i]);
             }
         }
         public Image Resize(Image image, int w, int h)
