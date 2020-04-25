@@ -277,7 +277,11 @@ namespace One_Night_Ultimate_Werewolf
             {
                 return Properties.Resources.Tanner;
             }
-
+            if (str == "Doppleganger")
+            {
+                return Properties.Resources.Doppleganger;
+            }
+            
             return Properties.Resources.Troublemaker;
         }
 
