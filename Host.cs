@@ -129,9 +129,9 @@ namespace One_Night_Ultimate_Werewolf
             {
                 TcpClient client = listener.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
-                byte[] data = new byte[64];
+                byte[] data = new byte[24];
                 int bytes = stream.Read(data, 0, data.Length);
-                string name = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
+                string name = RemoveCharacters(System.Text.Encoding.UTF8.GetString(data, 0, bytes));
                 this.Invoke(new AddTextDelegate(AddText), console, name + " joined");
                 string names = players.Count == 0 ? "\0" : "";
                 for (int i = 0; i < players.Count; i++)
@@ -151,6 +151,16 @@ namespace One_Night_Ultimate_Werewolf
                 WriteString(names, stream);
                 players.Add(new Player(client, stream, name));
             }
+        }
+
+        public string RemoveCharacters(string str)
+        {
+            string output = "";
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] != '\n' && str[i] != '\0') output += str[i];
+            }
+            return output;
         }
 
         public string ReadString(int byteLength, NetworkStream stream)

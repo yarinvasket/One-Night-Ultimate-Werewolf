@@ -70,7 +70,12 @@ namespace One_Night_Ultimate_Werewolf
 
         public void GotIP(object sender, EventArgs args)
         {
-            Client clientForm = new Client(username, RemoveCharacters(usernametext.Text))
+            string ip = RemoveCharacters(usernametext.Text);
+            if (ip == "Enter IP here")
+            {
+                ip = "localhost";
+            }
+            Client clientForm = new Client(username, ip)
             {
                 StartPosition = FormStartPosition.Manual,
                 Location = this.Location,

@@ -25,6 +25,9 @@ namespace One_Night_Ultimate_Werewolf
         private NetworkStream stream;
         private string role;
         private PictureBox[] pcards;
+        private Label[] pnames;
+        private PictureBox card;
+        private Label name;
         private PictureBox[] midcards;
         private int w;
         private int h;
@@ -119,7 +122,7 @@ namespace One_Night_Ultimate_Werewolf
         {
             while (true)
             {
-                string str = ReadString(64);
+                string str = ReadString(24);
                 if (str[0] == '\0')
                 {
                     role = str.Substring(1);
@@ -153,7 +156,7 @@ namespace One_Night_Ultimate_Werewolf
             Controls.Add(card);
 
             img = Properties.Resources.Back;
-            img = Resize(img, card.Width, card.Height);
+            img = Resize(img, 120, 164);
             int p = players.Count;
             pcards = new PictureBox[players.Count];
             midcards = new PictureBox[3];
