@@ -50,6 +50,13 @@ namespace One_Night_Ultimate_Werewolf
         public void IP(object sender, EventArgs args)
         {
             username = usernametext.Text;
+
+            if (Encoding.UTF8.GetByteCount(username) > 24)
+            {
+                MessageBox.Show("Username must not be longer than 24 bytes", "Username too long", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             Controls.Remove((Button)sender);
 
             usernametext.Text = "Enter IP here";
@@ -106,7 +113,6 @@ namespace One_Night_Ultimate_Werewolf
                 username.Text = "";
                 username.ForeColor = Color.Black;
             }
-
         }
     }
 }

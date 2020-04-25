@@ -133,8 +133,6 @@ namespace One_Night_Ultimate_Werewolf
                 }
                 players.Add(str);
                 this.Invoke(new AddTextDelegate(Host.AddText), connectedPlayers, str);
-
-               
             }
         }
 
@@ -147,13 +145,21 @@ namespace One_Night_Ultimate_Werewolf
             w = this.Width;
             h = this.Height;
 
-            PictureBox card = new PictureBox();
+            card = new PictureBox();
+            pnames = new Label[players.Count];
             Image img = StrToImg(role);
-            img = Resize(img, 2*img.Width/3, 2*img.Height/3);
+            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
             card.Image = img;
-            card.Size = img.Size;            
-            card.Location = new Point(w / 2-card.Size.Width/2, (5 * h) / 6 - card.Size.Height / 2);            
+            card.Size = img.Size;
+            card.Location = new Point(w / 2 - card.Size.Width / 2, (5 * h) / 6 - card.Size.Height / 2);
             Controls.Add(card);
+
+            name = new Label();
+            name.Text = username;
+            name.Font = new Font("Monospace", 14);
+            name.Size = new Size(username.Length * 16, 25);
+            name.Location = new Point(card.Location.X - 5 * username.Length + img.Width / 2, card.Location.Y + img.Height + 5);
+            Controls.Add(name);
 
             img = Properties.Resources.Back;
             img = Resize(img, 120, 164);
@@ -162,11 +168,13 @@ namespace One_Night_Ultimate_Werewolf
             midcards = new PictureBox[3];
             for (int i = 0; i < players.Count; i++)
             {
-                pcards[i] = new PictureBox();
-                pcards[i].Image = img;
-                pcards[i].Size = img.Size;
-                pcards[i].Location = new Point(w/2-pcards[i].Width/2+ (int)(h * Math.Sin(2 * Math.PI * (i + 1) / (p + 1)) / 3), h/2-pcards[i].Height / 2 + (int)(h * Math.Cos(2 * Math.PI * (i + 1) / (p + 1)) / 3));
-                if (pcards[i].Location.X>w/2- pcards[i].Width / 2)
+                pcards[i] = new PictureBox
+                {
+                    Image = img,
+                    Size = img.Size
+                };
+                pcards[i].Location = new Point(w / 2 - pcards[i].Width / 2 + (int)(h * Math.Sin(2 * Math.PI * (i + 1) / (p + 1)) / 3), h / 2 - pcards[i].Height / 2 + (int)(h * Math.Cos(2 * Math.PI * (i + 1) / (p + 1)) / 3));
+                if (pcards[i].Location.X > w / 2 - pcards[i].Width / 2)
                 {
                     pcards[i].Location = new Point(pcards[i].Location.X + w / 6, pcards[i].Location.Y);
                 }
@@ -175,6 +183,13 @@ namespace One_Night_Ultimate_Werewolf
                     pcards[i].Location = new Point(pcards[i].Location.X - w / 6, pcards[i].Location.Y);
                 }
                 Controls.Add(pcards[i]);
+
+                pnames[i] = new Label();
+                pnames[i].Text = players[i];
+                pnames[i].Font = new Font("Monospace", 14);
+                pnames[i].Size = new Size(players[i].Length * 16, 25);
+                pnames[i].Location = new Point(pcards[i].Location.X - 5 * players[i].Length + img.Width / 2, pcards[i].Location.Y + img.Height + 5);
+                Controls.Add(pnames[i]);
             }
 
             for (int i = 0; i < midcards.Length; i++)
@@ -182,10 +197,11 @@ namespace One_Night_Ultimate_Werewolf
                 midcards[i] = new PictureBox();
                 midcards[i].Image = img;
                 midcards[i].Size = img.Size;
-                midcards[i].Location = new Point(w / 2 -  midcards[i].Width / 2 - w /13 + i * w / 13, h / 2 - midcards[i].Height / 2);
+                midcards[i].Location = new Point(w / 2 - midcards[i].Width / 2 - w / 13 + i * w / 13, h / 2 - midcards[i].Height / 2);
                 Controls.Add(midcards[i]);
             }
         }
+
         public Image Resize(Image image, int w, int h)
         {
             Bitmap bmp = new Bitmap(w, h);
@@ -195,6 +211,7 @@ namespace One_Night_Ultimate_Werewolf
 
             return bmp;
         }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.F11)
@@ -215,7 +232,7 @@ namespace One_Night_Ultimate_Werewolf
 
         public Image StrToImg(string str)
         {
-            
+
             if (str == "Werewolf")
             {
                 return Properties.Resources.Werewolf;
@@ -263,6 +280,7 @@ namespace One_Night_Ultimate_Werewolf
 
             return Properties.Resources.Troublemaker;
         }
+
         public string ReadString(int byteLength)
         {
             byte[] bytes = new byte[byteLength];

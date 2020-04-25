@@ -79,10 +79,11 @@ namespace One_Night_Ultimate_Werewolf
             }*/
             playerReciever.Suspend();
             Controls.RemoveAt(Controls.Count - 1);
-            int offset = 0;
             for (int i = 0; i < players.Count; i++)
             {
-                byte[] bytes = Encoding.ASCII.GetBytes('\0' + deck[i]);
+                players[i].card = deck[i];
+                players[i].role = deck[i];
+                byte[] bytes = Encoding.UTF8.GetBytes('\0' + deck[i]);
                 try
                 {
                     players[i].stream.Write(bytes, 0, bytes.Length);
@@ -104,8 +105,8 @@ namespace One_Night_Ultimate_Werewolf
 
             for (int i = 0; i < players.Count; i++)
             {
-                byte[] bytes = Encoding.ASCII.GetBytes(str);
-                players[i].stream.Write(bytes, offset, bytes.Length);
+                byte[] bytes = Encoding.UTF8.GetBytes(str);
+                players[i].stream.Write(bytes, 0, bytes.Length);
             }
 
             AddText(console, "Game started");
