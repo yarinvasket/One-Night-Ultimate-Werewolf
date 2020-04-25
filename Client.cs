@@ -35,6 +35,7 @@ namespace One_Night_Ultimate_Werewolf
         private int sec;
         private Label in10;
         private Timer timer;
+        private Thread thread;
 
         public Client(string username, string ip)
         {
@@ -166,7 +167,7 @@ namespace One_Night_Ultimate_Werewolf
             Controls.Add(name);
 
             img = Properties.Resources.Back;
-            img = Resize(img, 120, 164);
+            img = Resize(img, w / 16, h * 41 / 270);
             int p = players.Count;
             pcards = new PictureBox[players.Count];
             midcards = new PictureBox[3];
@@ -204,9 +205,9 @@ namespace One_Night_Ultimate_Werewolf
                 midcards[i].Location = new Point(w / 2 - midcards[i].Width / 2 - w / 13 + i * w / 13, h / 2 - midcards[i].Height / 2);
                 Controls.Add(midcards[i]);
             }
-            StartGame();
+            SecondsToStart();
         }
-        public void StartGame()
+        public void SecondsToStart()
         {
             in10 = new Label()
             {                
@@ -222,9 +223,24 @@ namespace One_Night_Ultimate_Werewolf
             timer.Interval=1000;
             timer.Tick += Waiting10Secs;
             timer.Start();
+
             
         }
+        public void OthersTurn()
+        {
+         
+            BackgroundImage = Properties.Resources.Sleep;
 
+            /*Label night = new Label();
+            night.Location = new Point(w / 2, h / 2);
+            night.Size = new Size(100, 100);
+            night.Text = "Night has fallen over the city";
+            night.Font = new Font("Ariel", 50);
+            Controls.Add(night);*/
+            
+
+            
+        }
         private void Waiting10Secs(object sender, EventArgs args)
         {
             if (sec != 1)
@@ -241,6 +257,23 @@ namespace One_Night_Ultimate_Werewolf
                 Controls.Remove(in10);
                 in10 = null;
                 timer.Stop();
+                stream.Read(new byte[] { 0 }, 0, 1);
+                StartGame();
+            }
+        }
+        public void StartGame()
+        {
+            Image img = Properties.Resources.Back;
+            img = Resize(img, w/16, h*41/270);
+            card.Size = img.Size;
+            card.Image =img;
+
+            thread = new Thread(OthersTurn);
+            thread.Start();
+
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                Controls[i].Hide();
             }
         }
         public Image Resize(Image image, int w, int h)
