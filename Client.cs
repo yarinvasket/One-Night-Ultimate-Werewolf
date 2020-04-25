@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
 namespace One_Night_Ultimate_Werewolf
 {
@@ -31,6 +32,9 @@ namespace One_Night_Ultimate_Werewolf
         private PictureBox[] midcards;
         private int w;
         private int h;
+        private int sec;
+        private Label in10;
+        private Timer timer;
 
         public Client(string username, string ip)
         {
@@ -200,8 +204,45 @@ namespace One_Night_Ultimate_Werewolf
                 midcards[i].Location = new Point(w / 2 - midcards[i].Width / 2 - w / 13 + i * w / 13, h / 2 - midcards[i].Height / 2);
                 Controls.Add(midcards[i]);
             }
+            StartGame();
+        }
+        public void StartGame()
+        {
+            in10 = new Label()
+            {                
+                Size = new Size(100, 50)
+            };
+            in10.Location = new Point(49*w / 100, h / 4);
+            sec = 10;
+            in10.Font = new Font("Arial", 24);
+            in10.Text = sec.ToString();
+            Controls.Add(in10);
+
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval=1000;
+            timer.Tick += Waiting10Secs;
+            timer.Start();
+            
         }
 
+        private void Waiting10Secs(object sender, EventArgs args)
+        {
+            if (sec != 1)
+            {
+                sec--;
+                if (sec == 3)
+                {
+                    in10.ForeColor = Color.Green;
+                }
+                in10.Text = sec.ToString();
+            }
+            else
+            { 
+                Controls.Remove(in10);
+                in10 = null;
+                timer.Stop();
+            }
+        }
         public Image Resize(Image image, int w, int h)
         {
             Bitmap bmp = new Bitmap(w, h);
