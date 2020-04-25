@@ -50,7 +50,7 @@ namespace One_Night_Ultimate_Werewolf
                 ForeColor = Color.Red,
                 Font = new Font("Arial", 20),
                 Location = new Point(20, 100),
-                Size = new Size(500, 30)
+                Size = new Size(500, 35)
             };
             Controls.Add(you);
 
@@ -58,7 +58,7 @@ namespace One_Night_Ultimate_Werewolf
             {
                 Font = new Font("Arial", 16),
                 Location = new Point(20, 140),
-                Size = new Size(300, 600)
+                Size = new Size(500, 600)
             };
             Controls.Add(connectedPlayers);
 
@@ -156,9 +156,9 @@ namespace One_Night_Ultimate_Werewolf
 
             name = new Label();
             name.Text = username;
-            name.Font = new Font("Monospace", 14);
+            name.Font = new Font(FontFamily.GenericMonospace, 14);
             name.Size = new Size(username.Length * 16, 25);
-            name.Location = new Point(card.Location.X - 5 * username.Length + img.Width / 2, card.Location.Y + img.Height + 5);
+            name.Location = new Point((int)(card.Location.X - 5.5 * username.Length + img.Width / 2), card.Location.Y + img.Height + 5);
             Controls.Add(name);
 
             img = Properties.Resources.Back;
@@ -186,9 +186,9 @@ namespace One_Night_Ultimate_Werewolf
 
                 pnames[i] = new Label();
                 pnames[i].Text = players[i];
-                pnames[i].Font = new Font("Monospace", 14);
+                pnames[i].Font = new Font(FontFamily.GenericMonospace, 14);
                 pnames[i].Size = new Size(players[i].Length * 16, 25);
-                pnames[i].Location = new Point(pcards[i].Location.X - 5 * players[i].Length + img.Width / 2, pcards[i].Location.Y + img.Height + 5);
+                pnames[i].Location = new Point((int)(pcards[i].Location.X - 5.5 * players[i].Length + img.Width / 2), pcards[i].Location.Y + img.Height + 5);
                 Controls.Add(pnames[i]);
             }
 
