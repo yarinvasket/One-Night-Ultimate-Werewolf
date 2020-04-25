@@ -71,7 +71,7 @@ namespace One_Night_Ultimate_Werewolf
                     DialogResult response2 = MessageBox.Show("The IP is invalid, don't no me.", "What do you mean no?", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Exclamation);
                     if (response2.ToString() == "Ignore")
                     {
-                        Ohno connectForm = new Ohno
+                        Ohno OhnoForm = new Ohno
                         {
                             StartPosition = FormStartPosition.Manual,
                             Location = this.Location
@@ -80,11 +80,25 @@ namespace One_Night_Ultimate_Werewolf
                         this.WindowState = FormWindowState.Minimized;
                         this.ShowInTaskbar = false;
                         Controls.Clear();
-                        connectForm.Show();
+                        OhnoForm.Show();
                         return;
                     }
                 }
-                One_Night_Ultimate_Werewolf.Menu.OnClose(null, null);
+
+                Connect connectForm = new Connect
+                {
+                    StartPosition = FormStartPosition.Manual,
+                    Location = this.Location,
+                    Size = new Size(500, 500),
+                    Text = One_Night_Ultimate_Werewolf.Menu.game + " - Connect to server"
+                };
+                connectForm.FormClosing += One_Night_Ultimate_Werewolf.Menu.OnClose;
+                this.Hide();
+                this.WindowState = FormWindowState.Minimized;
+                this.ShowInTaskbar = false;
+                Controls.Clear();
+                connectForm.Show();
+                return;
             }
             stream = client.GetStream();
             WriteString(username);
