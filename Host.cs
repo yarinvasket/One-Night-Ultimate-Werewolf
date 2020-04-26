@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
 namespace One_Night_Ultimate_Werewolf
 {
@@ -110,6 +111,13 @@ namespace One_Night_Ultimate_Werewolf
             }
 
             AddText(console, "Game started");
+
+            Thread.Sleep(10000);
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                players[i].stream.Write(new byte[] { 0},0,1);
+            }
         }
 
         public static void Shuffle<T>(T[] arr)
