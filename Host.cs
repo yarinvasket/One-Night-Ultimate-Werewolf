@@ -63,7 +63,7 @@ namespace One_Night_Ultimate_Werewolf
 
             Button startGame = new Button();
             startGame.Text = "Start Game";
-            startGame.Location = new Point(325, 875);
+            startGame.Location = new Point(325, 879);
             startGame.Size = new Size(100, 50);
             startGame.Click += StartGame_Click;
             Controls.Add(startGame);

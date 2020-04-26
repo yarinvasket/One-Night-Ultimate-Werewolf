@@ -34,6 +34,8 @@ namespace One_Night_Ultimate_Werewolf
         private int h;
         private int sec;
         private Label in10 = new Label();
+        private Label night;
+        private Label yourTurn;
         private Timer timer;
 
         public Client(string username, string ip)
@@ -122,11 +124,6 @@ namespace One_Night_Ultimate_Werewolf
             waitUntilGameStarts.Start();
         }
 
-        public void GoSleep()
-        {
-
-        }
-
         private void WaitUntilGameStarts()
         {
             while (true)
@@ -153,6 +150,14 @@ namespace One_Night_Ultimate_Werewolf
 
             w = this.Width;
             h = this.Height;
+
+            night = new Label();
+            night.Size = new Size(1920, 1080);
+            night.BackColor = Color.FromArgb(0, 0, 0, 0);
+            night.ForeColor = Color.White;
+            night.Text = "Night has fallen over the city...";
+            night.Location = new Point(w / 2 - 20 * night.Text.Length, h / 2 - 25);
+            night.Font = new Font(FontFamily.GenericMonospace, 50);
 
             card = new PictureBox();
             pnames = new Label[players.Count];
@@ -225,18 +230,29 @@ namespace One_Night_Ultimate_Werewolf
             timer.Tick += Waiting10Secs;
             timer.Start();
         }
-        public void OthersTurn()
+        public void GotoSleep()
         {
             BackgroundImage = Properties.Resources.Sleep;
-
-            Label night = new Label();
-            night.Size = new Size(1920, 1080);
-            night.BackColor = Color.FromArgb(0, 0, 0, 0);
-            night.ForeColor = Color.White;
-            night.Text = "Night has fallen over the city...";
-            night.Location = new Point(w / 2 - 20 * night.Text.Length, h / 2 - 25);
-            night.Font = new Font(FontFamily.GenericMonospace, 50);
-            Invoke(new InvokeDelegate(() => {Controls.Add(night);}));
+            Invoke(new InvokeDelegate(() => {
+                for (int i = 0; i < Controls.Count; i++)
+                {
+                    Controls[i].Hide();
+                }
+                Controls.Add(night);
+            }));
+        }
+        public void WakeUp()
+        {
+            BackgroundImage = null;
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                Controls[i].Show();
+            }
+            in10.Text = 8.ToString();
+            sec = 8;
+            in10.Show();
+            timer.Start();
+            night.Hide();
         }
         private void Waiting10Secs(object sender, EventArgs args)
         {
@@ -264,36 +280,12 @@ namespace One_Night_Ultimate_Werewolf
             card.Size = img.Size;
             card.Image = img;
 
-            Thread thread = new Thread(OthersTurn);
-            thread.Start();
-
-            for (int i = 0; i < Controls.Count; i++)
-            {
-                Controls[i].Hide();
-            }
+            GotoSleep();
 
             Thread t = new Thread(() =>
             {
                 stream.Read(new byte[] { 0 }, 0, 1);
-                Invoke(new InvokeDelegate(() =>
-                {
-                    BackgroundImage = null;
-                    for (int i = 0; i < Controls.Count; i++)
-                    {
-                        if (Controls[i].Text != "Night has fallen over the city...")
-                        {
-                            Controls[i].Show();
-                        }
-                        else
-                        {
-                            Controls[i].Text = "It is your turn";
-                            in10.Text = 8.ToString();
-                            sec = 8;
-                            in10.Show();
-                            timer.Start();
-                        }
-                    }
-                }));
+                Invoke(new InvokeDelegate(WakeUp));
             });
             t.Start();
         }
@@ -372,9 +364,9 @@ namespace One_Night_Ultimate_Werewolf
             {
                 return Properties.Resources.Tanner;
             }
-            if (str == "Doppleganger")
+            if (str == "Doppelganger")
             {
-                return Properties.Resources.Doppleganger;
+                return Properties.Resources.Doppelganger;
             }
 
             return Properties.Resources.Troublemaker;
