@@ -23,7 +23,7 @@ namespace One_Night_Ultimate_Werewolf
         private string ip = new WebClient().DownloadString("http://icanhazip.com");
         private TcpListener listener;
         private List<Player> players = new List<Player>();
-        private string[] deck = {"Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Seer", "Mason", "Mason", "Minion", "Werewolf", "Werewolf", "Doppelganger"};
+        private string[] deck = { "Doppelganger", "Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Seer", "Mason", "Mason", "Minion", "Werewolf", "Werewolf" };
         private TextBox console;
         private Thread playerReciever;
 
@@ -117,6 +117,18 @@ namespace One_Night_Ultimate_Werewolf
             for (int i = 0; i < players.Count; i++)
             {
                 players[i].stream.Write(new byte[] { 0},0,1);
+            }
+            
+            deck =new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac","Doppelganger" };
+            for (int i = 0; i <deck.Length; i++)
+            {
+                for (int j = 0; j < players.Count; j++)
+                {
+                    if (players[j].role == deck[i])
+                    {
+
+                    }
+                }
             }
         }
 
