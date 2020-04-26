@@ -275,6 +275,25 @@ namespace One_Night_Ultimate_Werewolf
             {
                 Controls[i].Hide();
             }
+
+            stream.Read(new byte[] { 0},0,1);
+            BackgroundImage = null;
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                if (Controls[i].Text != "Night has fallen over the city")
+                {
+                    Controls[i].Show();
+                }
+                else 
+                {
+                    Controls[i].Text = "It is your turn";
+                    in10.Text = 8.ToString();
+                    sec = 8;
+                    in10.Show();
+                    timer.Start();
+                }
+            }
+            
         }
         public Image Resize(Image image, int w, int h)
         {

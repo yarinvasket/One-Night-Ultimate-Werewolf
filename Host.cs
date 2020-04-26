@@ -119,14 +119,15 @@ namespace One_Night_Ultimate_Werewolf
                 players[i].stream.Write(new byte[] { 0},0,1);
             }
             
-            deck =new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac","Doppelganger" };
+            deck =new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac"};
             for (int i = 0; i <deck.Length; i++)
             {
                 for (int j = 0; j < players.Count; j++)
                 {
                     if (players[j].role == deck[i])
                     {
-
+                        players[j].stream.Write(new byte[] { 0 }, 0, 1);
+                        Thread.Sleep(8000);
                     }
                 }
             }
