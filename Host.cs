@@ -23,6 +23,7 @@ namespace One_Night_Ultimate_Werewolf
         private string ip = new WebClient().DownloadString("http://icanhazip.com");
         private TcpListener listener;
         private List<Player> players = new List<Player>();
+        private string[] middleCards = new string[3];
         private string[] deck = { "Doppelganger", "Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Seer", "Mason", "Mason", "Minion", "Werewolf", "Werewolf" };
         private TextBox console;
         private Thread playerReciever;
@@ -97,6 +98,11 @@ namespace One_Night_Ultimate_Werewolf
                 }
             }
 
+            for (int i = 10; i < deck.Length; i++)
+            {
+                middleCards[i - 10] = deck[i];
+            }
+
             string str = "";
             for (int i = 0; i < players.Count; i++)
             {
@@ -112,25 +118,36 @@ namespace One_Night_Ultimate_Werewolf
 
             AddText(console, "Game started");
 
-            Thread.Sleep(10000);
-
-            for (int i = 0; i < players.Count; i++)
+            Thread t = new Thread(() =>
             {
-                players[i].stream.Write(new byte[] { 0},0,1);
-            }
-            
-            deck =new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac"};
-            for (int i = 0; i <deck.Length; i++)
-            {
-                for (int j = 0; j < players.Count; j++)
+                Thread.Sleep(10000);
+                for (int i = 0; i < players.Count; i++)
                 {
-                    if (players[j].role == deck[i])
+                    try
                     {
-                        players[j].stream.Write(new byte[] { 0 }, 0, 1);
-                        Thread.Sleep(8000);
+                        players[i].stream.Write(new byte[] { 0 }, 0, 1);
                     }
+                    catch { }
                 }
-            }
+
+                deck = new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac" };
+                for (int i = 0; i < deck.Length; i++)
+                {
+                    for (int j = 0; j < players.Count; j++)
+                    {
+                        if (players[j].role == deck[i])
+                        {
+                            try
+                            {
+                                players[j].stream.Write(new byte[] { 0 }, 0, 1);
+                            }
+                            catch { }
+                        }
+                    }
+                    Thread.Sleep(8000);
+                }
+            });
+            t.Start();
         }
 
         public static void Shuffle<T>(T[] arr)

@@ -15,7 +15,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace One_Night_Ultimate_Werewolf
 {
-    public delegate void GameStarted();
+    public delegate void InvokeDelegate();
     public partial class Client : Form
     {
         private string username;
@@ -35,7 +35,6 @@ namespace One_Night_Ultimate_Werewolf
         private int sec;
         private Label in10;
         private Timer timer;
-        private Thread thread;
 
         public Client(string username, string ip)
         {
@@ -133,7 +132,7 @@ namespace One_Night_Ultimate_Werewolf
                     role = str.Substring(1);
                     players = ReadString(1024).Split('\0').ToList<string>();
                     players.Remove(username);
-                    Invoke(new GameStarted(GameStarts));
+                    Invoke(new InvokeDelegate(GameStarts));
                     break;
                 }
                 players.Add(str);
@@ -210,65 +209,61 @@ namespace One_Night_Ultimate_Werewolf
         public void SecondsToStart()
         {
             in10 = new Label()
-            {                
+            {
                 Size = new Size(100, 50)
             };
-            in10.Location = new Point(49*w / 100, h / 4);
+            in10.Location = new Point(49 * w / 100, h / 3);
             sec = 10;
             in10.Font = new Font("Arial", 24);
             in10.Text = sec.ToString();
             Controls.Add(in10);
 
             timer = new System.Windows.Forms.Timer();
-            timer.Interval=1000;
+            timer.Interval = 1000;
             timer.Tick += Waiting10Secs;
             timer.Start();
-
-            
         }
         public void OthersTurn()
         {
-         
             BackgroundImage = Properties.Resources.Sleep;
 
-            /*Label night = new Label();
-            night.Location = new Point(w / 2, h / 2);
-            night.Size = new Size(100, 100);
-            night.Text = "Night has fallen over the city";
-            night.Font = new Font("Ariel", 50);
-            Controls.Add(night);*/
-            
-
-            
+            Label night = new Label();
+            night.Size = new Size(1920, 1080);
+            night.BackColor = Color.FromArgb(0, 0, 0, 0);
+            night.ForeColor = Color.White;
+            night.Text = "Night has fallen over the city...";
+            night.Location = new Point(w / 2 - 20 * night.Text.Length, h / 2 - 25);
+            night.Font = new Font(FontFamily.GenericMonospace, 50);
+            Invoke(new InvokeDelegate(() => {Controls.Add(night);}));
         }
         private void Waiting10Secs(object sender, EventArgs args)
         {
-            if (sec != 1)
+            if (sec > 1)
             {
                 sec--;
                 if (sec == 3)
                 {
-                    in10.ForeColor = Color.Green;
+                    in10.ForeColor = Color.Red;
                 }
                 in10.Text = sec.ToString();
             }
             else
-            { 
+            {
                 Controls.Remove(in10);
                 in10 = null;
                 timer.Stop();
                 stream.Read(new byte[] { 0 }, 0, 1);
-                StartGame();
+                this.Invoke(new InvokeDelegate(StartGame));
             }
         }
         public void StartGame()
         {
             Image img = Properties.Resources.Back;
-            img = Resize(img, w/16, h*41/270);
+            img = Resize(img, w / 16, h * 41 / 270);
             card.Size = img.Size;
-            card.Image =img;
+            card.Image = img;
 
-            thread = new Thread(OthersTurn);
+            Thread thread = new Thread(OthersTurn);
             thread.Start();
 
             for (int i = 0; i < Controls.Count; i++)
@@ -276,24 +271,30 @@ namespace One_Night_Ultimate_Werewolf
                 Controls[i].Hide();
             }
 
-            stream.Read(new byte[] { 0},0,1);
-            BackgroundImage = null;
-            for (int i = 0; i < Controls.Count; i++)
+            Thread t = new Thread(() =>
             {
-                if (Controls[i].Text != "Night has fallen over the city")
+                stream.Read(new byte[] { 0 }, 0, 1);
+                Invoke(new InvokeDelegate(() =>
                 {
-                    Controls[i].Show();
-                }
-                else 
-                {
-                    Controls[i].Text = "It is your turn";
-                    in10.Text = 8.ToString();
-                    sec = 8;
-                    in10.Show();
-                    timer.Start();
-                }
-            }
-            
+                    BackgroundImage = null;
+                    for (int i = 0; i < Controls.Count; i++)
+                    {
+                        if (Controls[i].Text != "Night has fallen over the city")
+                        {
+                            Controls[i].Show();
+                        }
+                        else
+                        {
+                            Controls[i].Text = "It is your turn";
+                            in10.Text = 8.ToString();
+                            sec = 8;
+                            in10.Show();
+                            timer.Start();
+                        }
+                    }
+                }));
+            });
+            t.Start();
         }
         public Image Resize(Image image, int w, int h)
         {
@@ -374,7 +375,7 @@ namespace One_Night_Ultimate_Werewolf
             {
                 return Properties.Resources.Doppleganger;
             }
-            
+
             return Properties.Resources.Troublemaker;
         }
 
