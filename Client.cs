@@ -33,7 +33,7 @@ namespace One_Night_Ultimate_Werewolf
         private int w;
         private int h;
         private int sec;
-        private Label in10;
+        private Label in10 = new Label();
         private Timer timer;
 
         public Client(string username, string ip)
@@ -122,6 +122,11 @@ namespace One_Night_Ultimate_Werewolf
             waitUntilGameStarts.Start();
         }
 
+        public void GoSleep()
+        {
+
+        }
+
         private void WaitUntilGameStarts()
         {
             while (true)
@@ -208,10 +213,7 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void SecondsToStart()
         {
-            in10 = new Label()
-            {
-                Size = new Size(100, 50)
-            };
+            in10.Size = new Size(100, 50);
             in10.Location = new Point(49 * w / 100, h / 3);
             sec = 10;
             in10.Font = new Font("Arial", 24);
@@ -249,8 +251,7 @@ namespace One_Night_Ultimate_Werewolf
             }
             else
             {
-                Controls.Remove(in10);
-                in10 = null;
+                in10.Hide();
                 timer.Stop();
                 stream.Read(new byte[] { 0 }, 0, 1);
                 this.Invoke(new InvokeDelegate(StartGame));
@@ -279,7 +280,7 @@ namespace One_Night_Ultimate_Werewolf
                     BackgroundImage = null;
                     for (int i = 0; i < Controls.Count; i++)
                     {
-                        if (Controls[i].Text != "Night has fallen over the city")
+                        if (Controls[i].Text != "Night has fallen over the city...")
                         {
                             Controls[i].Show();
                         }

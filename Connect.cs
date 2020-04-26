@@ -57,6 +57,8 @@ namespace One_Night_Ultimate_Werewolf
                 return;
             }
 
+            if (username == "Enter username here") username = Environment.UserName;
+
             Controls.Remove((Button)sender);
 
             usernametext.Text = "Enter IP here";
