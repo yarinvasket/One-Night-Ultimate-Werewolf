@@ -39,6 +39,7 @@ namespace One_Night_Ultimate_Werewolf
         private Timer timer;
         private bool iscurrentturn;
         private string robbedcard;
+        Image back;
 
         public Client(string username, string ip)
         {
@@ -182,6 +183,7 @@ namespace One_Night_Ultimate_Werewolf
             int p = players.Count;
             pcards = new PictureBox[players.Count];
             midcards = new PictureBox[3];
+            back = img;
             for (int i = 0; i < players.Count; i++)
             {
                 pcards[i] = new PictureBox
@@ -258,6 +260,7 @@ namespace One_Night_Ultimate_Werewolf
         }
         private void Waiting10Secs(object sender, EventArgs args)
         {
+            
             if (sec > 1)
             {
                 sec--;
@@ -269,12 +272,10 @@ namespace One_Night_Ultimate_Werewolf
                     {
                         for (int i = 0; i < pcards.Length; i++)
                         {
-                            if (pcards[i].Image != Properties.Resources.Back)
+                            if (pcards[i].Image != back)
                             {
-                                Image img1 = Properties.Resources.Back;
-                                img1 = Resize(img1, w / 16, h * 41 / 270);
-                                pcards[i].Image = img1;
-                                pcards[i].Size = img1.Size;
+                                pcards[i].Image = back;
+                                pcards[i].Size = back.Size;
                             }
                         }
                         Image img = StrToImg(this.robbedcard);
@@ -299,12 +300,25 @@ namespace One_Night_Ultimate_Werewolf
                     {
                         if (role == "Robber")
                         {
-                            Image img1 = Properties.Resources.Back;
-                            img1 = Resize(img1, w / 16, h * 41 / 270);
-                            card.Image = img1;
-                            card.Size = img1.Size;
+                           
+                            card.Image = back;
+                            card.Size =back.Size;
                         }
-                }
+                        else
+                        {
+                            if (role == "Minion")
+                            {
+                                for (int i = 0; i < pcards.Length; i++)
+                                {
+                                    if (pcards[i].Image != back)
+                                    {
+                                        pcards[i].Image = back;
+                                        pcards[i].Size = back.Size;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 in10.Hide();
                 timer.Stop();
@@ -317,8 +331,8 @@ namespace One_Night_Ultimate_Werewolf
             
             Image img = Properties.Resources.Back;
             img = Resize(img, w / 16, h * 41 / 270);
-            card.Size = img.Size;
-            card.Image = img;
+            card.Size = back.Size;
+            card.Image = back;
 
             GotoSleep();
 
@@ -463,7 +477,13 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void Minion()
         {
+            byte[] data= new byte[3];
+            int length= stream.Read(data, 0, data.Length);
 
+            for (int i = 0; i < data.Length; i++)
+            {
+                pcards[data[i]].Image = StrToImg("Werewolf");
+            }
         }
         public void TroubleMaker()
         {
@@ -483,12 +503,16 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void RobCard(object sender,EventArgs argss)
         {
+            PictureBox robbedcard = (PictureBox)sender;
             for (int i = 0; i < players.Count; i++)
             {
-                pcards[i].Click += RobCard;
-            }
+                pcards[i].Click -= RobCard;
 
-            PictureBox robbedcard = (PictureBox)sender;
+                if (pcards[i].Equals(robbedcard))
+                {
+                    stream.Write(new byte[] {(byte)i },0,1);
+                }
+            }
             this.robbedcard= ReadString(20);
 
             Image img = StrToImg(this.robbedcard);
