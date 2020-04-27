@@ -35,6 +35,8 @@ namespace One_Night_Ultimate_Werewolf
         private int sec;
         private Label in10 = new Label();
         private Timer timer;
+        private bool iscurrentturn;
+        private string robbedcard;
 
         public Client(string username, string ip)
         {
@@ -246,11 +248,48 @@ namespace One_Night_Ultimate_Werewolf
                 if (sec == 3)
                 {
                     in10.ForeColor = Color.Red;
+
+                    if (role == "Robber")
+                    {
+                        for (int i = 0; i < pcards.Length; i++)
+                        {
+                            if (pcards[i].Image != Properties.Resources.Back)
+                            {
+                                Image img1 = Properties.Resources.Back;
+                                img1 = Resize(img1, w / 16, h * 41 / 270);
+                                pcards[i].Image = img1;
+                                pcards[i].Size = img1.Size;
+                            }
+                        }
+                        Image img = StrToImg(this.robbedcard);
+                        img = Resize(img, w / 16, h * 41 / 270);
+                        card.Image = img;
+                        card.Size = img.Size;
+                    }
                 }
                 in10.Text = sec.ToString();
             }
             else
             {
+                if (iscurrentturn) {
+                    if (role == "Insomnic")
+                    {
+                        Image img = Properties.Resources.Back;
+                        img = Resize(img, w / 16, h * 41 / 270);
+                        card.Image = img;
+                        card.Size = img.Size;
+                    }
+                    else
+                    {
+                        if (role == "Robber")
+                        {
+                            Image img1 = Properties.Resources.Back;
+                            img1 = Resize(img1, w / 16, h * 41 / 270);
+                            card.Image = img1;
+                            card.Size = img1.Size;
+                        }
+                }
+                }
                 in10.Hide();
                 timer.Stop();
                 stream.Read(new byte[] { 0 }, 0, 1);
@@ -259,6 +298,7 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void StartGame()
         {
+            
             Image img = Properties.Resources.Back;
             img = Resize(img, w / 16, h * 41 / 270);
             card.Size = img.Size;
@@ -286,10 +326,12 @@ namespace One_Night_Ultimate_Werewolf
                         }
                         else
                         {
+                            iscurrentturn = true;
                             Controls[i].Text = "It is your turn";
                             in10.Text = 8.ToString();
                             sec = 8;
                             in10.Show();
+                            CheckRole();
                             timer.Start();
                         }
                     }
@@ -325,6 +367,126 @@ namespace One_Night_Ultimate_Werewolf
             return false;
         }
 
+        public void CheckRole()
+        {
+            if (role == "Werewolf")
+            {
+                WereWolf();
+            }
+            else
+            {
+                if (role == "Mason")
+                {
+                    Mason();
+                }
+                else
+                {
+                    if (role == "Doppelganger")
+                    {
+                        Doppelganger();
+                    }
+                    else
+                    {
+                        if (role == "Minion")
+                        {
+                            Minion();
+                        }
+                        else
+                        {
+                            if (role == "Troublemaker")
+                            {
+                                TroubleMaker();
+                            }
+                            else
+                            {
+                                if (role == "Drunk")
+                                {
+                                    Drunk();
+                                }
+                                else
+                                {
+                                    if (role == "Seer")
+                                    {
+                                        Seer();
+                                    }
+                                    else
+                                    {
+                                        if (role == "Robber")
+                                        {
+                                            Robber();
+                                        }
+                                        else
+                                        {
+                                            Insomniac();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        public void Insomniac()
+        {
+            string newcard= ReadString(20);
+            Image img = StrToImg(newcard);
+            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            card.Image = img;
+            card.Size = img.Size;
+            
+        }
+        public void Robber()
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+                pcards[i].Click += RobCard;
+            }
+        }
+        public void Doppelganger()
+        {
+
+        }
+        public void Minion()
+        {
+
+        }
+        public void TroubleMaker()
+        {
+
+        }
+        public void Drunk()
+        {
+
+        }
+        public void Seer()
+        {
+
+        }
+        public void Mason()
+        {
+
+        }
+        public void RobCard(object sender,EventArgs argss)
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+                pcards[i].Click += RobCard;
+            }
+
+            PictureBox robbedcard = (PictureBox)sender;
+            this.robbedcard= ReadString(20);
+
+            Image img = StrToImg(this.robbedcard);
+            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            robbedcard.Image = img;
+            robbedcard.Size = img.Size;
+
+        }
+        public void WereWolf()
+        {
+
+        }
         public Image StrToImg(string str)
         {
 
