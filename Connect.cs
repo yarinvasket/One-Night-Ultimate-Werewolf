@@ -15,7 +15,7 @@ namespace One_Night_Ultimate_Werewolf
         private Label usernameask;
         private TextBox usernametext;
         private string username;
-
+        Button sub;
         public Connect()
         {
             usernameask = new Label
@@ -38,7 +38,7 @@ namespace One_Night_Ultimate_Werewolf
             usernametext.Click += UsernameClick;
             Controls.Add(usernametext);
 
-            Button sub = new Button();
+            sub = new Button();
             sub.Text = "Submit";
             sub.Location = new Point(190, 275);
             sub.Font = new Font("Arial", 18);
@@ -75,6 +75,23 @@ namespace One_Night_Ultimate_Werewolf
             };
             sub.Click += GotIP;
             Controls.Add(sub);
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter)
+            {
+                if (usernametext.Text== "Enter username here")
+                {
+                    IP(sub, null);
+                }
+                else
+                {
+                    GotIP(sub, null);
+                }
+                return true;
+            }
+         
+            return false;
         }
 
         public void GotIP(object sender, EventArgs args)

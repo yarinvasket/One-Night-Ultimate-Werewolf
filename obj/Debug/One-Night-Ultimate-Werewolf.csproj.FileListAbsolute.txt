@@ -1,0 +1,13 @@
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\bin\Debug\One-Night-Ultimate-Werewolf.exe.config
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\bin\Debug\One-Night-Ultimate-Werewolf.exe
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\bin\Debug\One-Night-Ultimate-Werewolf.pdb
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One-Night-Ultimate-Werewolf.csprojAssemblyReference.cache
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One_Night_Ultimate_Werewolf.Menu.resources
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One_Night_Ultimate_Werewolf.Properties.Resources.resources
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One-Night-Ultimate-Werewolf.csproj.GenerateResource.cache
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One-Night-Ultimate-Werewolf.exe
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One-Night-Ultimate-Werewolf.pdb
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One_Night_Ultimate_Werewolf.Connect.resources
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One_Night_Ultimate_Werewolf.Host.resources
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One_Night_Ultimate_Werewolf.Client.resources
+D:\יובל\One-Night-Ultimate-Werewolf\One-Night-Ultimate-Werewolf\obj\Debug\One-Night-Ultimate-Werewolf.csproj.CoreCompileInputs.cache
