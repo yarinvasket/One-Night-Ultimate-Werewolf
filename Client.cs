@@ -248,6 +248,22 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void WakeUp()
         {
+            BackgroundImage = null;
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                if (Controls[i].Text != "Night has fallen over the city...")
+                {
+                    Controls[i].Show();
+                }
+                else
+                {
+                    
+                    Controls[i].Text = "It is your turn";
+                    Controls[i].Show();
+                    
+                }
+            }
+
             //BackgroundImage = null;
             //for (int i = 0; i < Controls.Count; i++)
             //{
@@ -257,7 +273,15 @@ namespace One_Night_Ultimate_Werewolf
             //sec = 8;
             //in10.Show();
             //timer.Start();
-            //night.Hide();
+            
+
+            in10.Text = 8.ToString();
+            sec = 8;
+            in10.Show();
+            CheckRole();
+            timer.Start();
+            night.Hide();
+            iscurrentturn = true;
         }
         private void Waiting10Secs(object sender, EventArgs args)
         {
@@ -328,12 +352,17 @@ namespace One_Night_Ultimate_Werewolf
                     }
                     iscurrentturn = false;
                 }
+                else
+                {
+                    stream.Read(new byte[] { 0 }, 0, 1);
+                    //this.Invoke(new InvokeDelegate(
+                    StartGame();
+                    // ));
+                }
                 in10.Hide();
                 timer.Stop();
-                stream.Read(new byte[] { 0 }, 0, 1);
-                //this.Invoke(new InvokeDelegate(
-                StartGame();
-                   // ));
+
+               
             }
         }
         public void StartGame()
@@ -345,35 +374,34 @@ namespace One_Night_Ultimate_Werewolf
 
             GotoSleep();
 
+          
             Thread t = new Thread(() =>
             {
-                stream.Read(new byte[] { 0 }, 0, 1);
+                stream.Read(new byte[] { 0 }, 0, 1);//client's turn
 
-                Invoke(new InvokeDelegate(() =>
-                {
-                    BackgroundImage = null;
-                    for (int i = 0; i < Controls.Count; i++)
-                    {
-                        if (Controls[i].Text != "Night has fallen over the city...")
-                        {
-                            Controls[i].Show();
-                        }
-                        else
-                        {
-                            iscurrentturn = true;
-                            Controls[i].Text = "It is your turn";
-                            in10.Text = 8.ToString();
-                            sec = 8;
-                            in10.Show();
-                            CheckRole();
-                            timer.Start();
-                        }
-                    }
-                }));
-
-                //Invoke(new InvokeDelegate(
-                WakeUp();
-                //   );
+                //Invoke(new InvokeDelegate(() =>
+                //{
+                //    BackgroundImage = null;
+                //    for (int i = 0; i < Controls.Count; i++)
+                //    {
+                //        if (Controls[i].Text != "Night has fallen over the city...")
+                //        {
+                //            Controls[i].Show();
+                //        }
+                //        else
+                //        {
+                //            iscurrentturn = true;
+                //            Controls[i].Text = "It is your turn";
+                //            in10.Text = 8.ToString();
+                //            sec = 8;
+                //            in10.Show();
+                //            CheckRole();
+                //            timer.Start();
+                //        }
+                //    }
+                //}));
+                Invoke(new InvokeDelegate(WakeUp));
+               
 
             });
             t.Start();
@@ -539,7 +567,7 @@ namespace One_Night_Ultimate_Werewolf
             card.Image = img;
             card.Size = img.Size;
             byte[] data = new byte[2];
-            int length = stream.Read(data, 0, data.Length);
+            int length = stream.Read(data, 0, data.Length);//causes werewolf to crush
 
             for (int i = 0; i < data.Length; i++)
             {
