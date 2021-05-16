@@ -249,18 +249,33 @@ namespace One_Night_Ultimate_Werewolf
         public void WakeUp()
         {
             BackgroundImage = null;
-            for (int i = 0; i < Controls.Count; i++)
+            if (iscurrentturn)
             {
-                if (Controls[i].Text != "Night has fallen over the city...")
+                for (int i = 0; i < Controls.Count; i++)
                 {
-                    Controls[i].Show();
+                    if (Controls[i].Text != "Night has fallen over the city...")
+                    {
+                        Controls[i].Show();
+                    }
+                    else
+                    {
+                        Controls[i].Text = "It is your turn";
+                        Controls[i].Show();
+                    }
                 }
-                else
+            }
+            else
+            {
+                for (int i = 0; i < Controls.Count; i++)
                 {
-                    
-                    Controls[i].Text = "It is your turn";
-                    Controls[i].Show();
-                    
+                    if (Controls[i].Text == "Night has fallen over the city..." || Controls[i].Text == "It is your turn" || Controls[i].Text == "1")
+                    {
+                        Controls[i].Hide();
+                    }
+                    else
+                    {
+                        Controls[i].Show();
+                    }
                 }
             }
 
@@ -273,19 +288,13 @@ namespace One_Night_Ultimate_Werewolf
             //sec = 8;
             //in10.Show();
             //timer.Start();
-            
 
-            in10.Text = 8.ToString();
-            sec = 8;
-            in10.Show();
-            CheckRole();
-            timer.Start();
-            night.Hide();
-            iscurrentturn = true;
+
+
         }
         private void Waiting10Secs(object sender, EventArgs args)
         {
-            
+
             if (sec > 1)
             {
                 sec--;
@@ -326,13 +335,13 @@ namespace One_Night_Ultimate_Werewolf
                     {
                         if (role == "Robber")
                         {
-                           
+
                             card.Image = back;
-                            card.Size =back.Size;
+                            card.Size = back.Size;
                         }
                         else
                         {
-                            if (role == "Minion"|| role == "Werewolf")
+                            if (role == "Minion" || role == "Werewolf")
                             {
                                 for (int i = 0; i < pcards.Length; i++)
                                 {
@@ -351,6 +360,15 @@ namespace One_Night_Ultimate_Werewolf
                         }
                     }
                     iscurrentturn = false;
+                    GotoSleep();
+
+                    Thread t = new Thread(() =>
+                    {
+                        stream.Read(new byte[] { 0 }, 0, 1);
+                        this.Invoke(new InvokeDelegate(WakeUp));
+
+                    });
+                    t.Start();
                 }
                 else
                 {
@@ -362,7 +380,7 @@ namespace One_Night_Ultimate_Werewolf
                 in10.Hide();
                 timer.Stop();
 
-               
+
             }
         }
         public void StartGame()
@@ -374,10 +392,24 @@ namespace One_Night_Ultimate_Werewolf
 
             GotoSleep();
 
-          
+
             Thread t = new Thread(() =>
             {
-                stream.Read(new byte[] { 0 }, 0, 1);//client's turn
+                if (role != "Tanner" && role != "Hunter")
+                {
+                    stream.Read(new byte[] { 0 }, 0, 1);//client's turn 
+                    Invoke(new InvokeDelegate(() =>
+                    {
+                        WakeUp();
+                        in10.Text = 8.ToString();
+                        sec = 8;
+                        in10.Show();
+                        CheckRole();
+                        timer.Start();
+                        night.Hide();
+                        iscurrentturn = true;
+                    }));
+                }
 
                 //Invoke(new InvokeDelegate(() =>
                 //{
@@ -400,8 +432,8 @@ namespace One_Night_Ultimate_Werewolf
                 //        }
                 //    }
                 //}));
-                Invoke(new InvokeDelegate(WakeUp));
-               
+
+
 
             });
             t.Start();
@@ -415,7 +447,6 @@ namespace One_Night_Ultimate_Werewolf
 
             return bmp;
         }
-
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.F11)
@@ -433,7 +464,6 @@ namespace One_Night_Ultimate_Werewolf
             }
             return false;
         }
-
         public void CheckRole()
         {
             if (role == "Werewolf")
@@ -496,12 +526,12 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void Insomniac()
         {
-            string newcard= ReadString(20);
-            Image img = StrToImg(newcard);
-            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            card.Image = img;
-            card.Size = img.Size;
-            
+            //string newcard= ReadString(20);
+            //Image img = StrToImg(newcard);
+            //img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            //card.Image = img;
+            //card.Size = img.Size;
+
         }
         public void Robber()
         {
@@ -516,13 +546,13 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void Minion()
         {
-            byte[] data= new byte[3];
-            int length= stream.Read(data, 0, data.Length);
+            //byte[] data= new byte[3];
+            //int length= stream.Read(data, 0, data.Length);
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                pcards[data[i]].Image = StrToImg("Werewolf");
-            }
+            //for (int i = 0; i < data.Length; i++)
+            //{
+            //    pcards[data[i]].Image = StrToImg("Werewolf");
+            //}
         }
         public void TroubleMaker()
         {
@@ -540,39 +570,39 @@ namespace One_Night_Ultimate_Werewolf
         {
 
         }
-        public void RobCard(object sender,EventArgs argss)
+        public void RobCard(object sender, EventArgs argss)
         {
-            PictureBox robbedcard = (PictureBox)sender;
-            for (int i = 0; i < players.Count; i++)
-            {
-                pcards[i].Click -= RobCard;
+            //PictureBox robbedcard = (PictureBox)sender;
+            //for (int i = 0; i < players.Count; i++)
+            //{
+            //    pcards[i].Click -= RobCard;
 
-                if (pcards[i].Equals(robbedcard))
-                {
-                    stream.Write(new byte[] {(byte)i },0,1);
-                }
-            }
-            this.robbedcard= ReadString(20);
+            //    if (pcards[i].Equals(robbedcard))
+            //    {
+            //        stream.Write(new byte[] {(byte)i },0,1);
+            //    }
+            //}
+            //this.robbedcard= ReadString(20);
 
-            Image img = StrToImg(this.robbedcard);
-            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            robbedcard.Image = img;
-            robbedcard.Size = img.Size;
+            //Image img = StrToImg(this.robbedcard);
+            //img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            //robbedcard.Image = img;
+            //robbedcard.Size = img.Size;
 
         }
         public void WereWolf()
         {
-            Image img = StrToImg("Werewolf");
-            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            card.Image = img;
-            card.Size = img.Size;
-            byte[] data = new byte[2];
-            int length = stream.Read(data, 0, data.Length);//causes werewolf to crush
+            //Image img = StrToImg("Werewolf");
+            //img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            //card.Image = img;
+            //card.Size = img.Size;
+            //byte[] data = new byte[2];
+            //int length = stream.Read(data, 0, data.Length);//causes werewolf to crush
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                pcards[data[i]].Image = StrToImg("Werewolf");
-            }
+            //for (int i = 0; i < data.Length; i++)
+            //{
+            //    pcards[data[i]].Image = StrToImg("Werewolf");
+            //}
         }
         public Image StrToImg(string str)
         {

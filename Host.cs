@@ -129,8 +129,9 @@ namespace One_Night_Ultimate_Werewolf
                     }
                     catch { }
                 }
-
-                deck = new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac" };
+                
+                deck = new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac" }; 
+                Thread.Sleep(players.Count*750);
                 for (int i = 0; i < deck.Length; i++)
                 {
                     for (int j = 0; j < players.Count; j++)
@@ -146,8 +147,22 @@ namespace One_Night_Ultimate_Werewolf
                     }
                     Thread.Sleep(8000);
                 }
+
+
+                for (int j = 0; j < players.Count; j++)
+                {
+                    try
+                    {
+                        players[j].stream.Write(new byte[] { 0 }, 0, 1);
+                    }
+                    catch { }
+                }
+
+
             });
             t.Start();
+
+
         }
 
         public static void Shuffle<T>(T[] arr)
