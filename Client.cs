@@ -395,21 +395,24 @@ namespace One_Night_Ultimate_Werewolf
 
             Thread t = new Thread(() =>
             {
-                if (role != "Tanner" && role != "Hunter")
-                {
-                    stream.Read(new byte[] { 0 }, 0, 1);//client's turn 
+                stream.Read(new byte[] { 0 }, 0, 1);//client's turn 
+                
+                    
                     Invoke(new InvokeDelegate(() =>
                     {
-                        WakeUp();
-                        in10.Text = 8.ToString();
-                        sec = 8;
-                        in10.Show();
-                        CheckRole();
-                        timer.Start();
-                        night.Hide();
-                        iscurrentturn = true;
+                        WakeUp(); 
+                        if (role != "Tanner" && role != "Hunter")
+                        {
+                            in10.Text = 8.ToString();
+                            sec = 8;
+                            in10.Show();
+                            CheckRole();
+                            timer.Start();
+                            night.Hide();
+                            iscurrentturn = true;
+                        }
                     }));
-                }
+                
 
                 //Invoke(new InvokeDelegate(() =>
                 //{
