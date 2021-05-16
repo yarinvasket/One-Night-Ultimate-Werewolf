@@ -143,9 +143,17 @@ namespace One_Night_Ultimate_Werewolf
                                 players[j].stream.Write(new byte[] { 0 }, 0, 1);
                             }
                             catch { }
+
+                            if (i == 0)
+                            {
+                                byte player = ReceiveByte(j);
+                                string role = players[player].role;
+                                WriteString(role, players[j].stream);
+                            }
                         }
                     }
                     Thread.Sleep(8000);
+                    
                 }
 
 
@@ -216,7 +224,26 @@ namespace One_Night_Ultimate_Werewolf
             }
             return output;
         }
-
+        public byte ReceiveByte(int clientid)
+        {
+            byte[] buffer = new byte[1];
+            try
+            {
+                players[clientid].stream.Read(buffer, 0, 1);
+            }
+            catch { }
+            return buffer[0];
+        }
+        public int ReceiveInt(int clientid)
+        {
+            byte[] buffer = new byte[1];
+            try
+            {
+                players[clientid].stream.Read(buffer, 0, 1);
+            }
+            catch { }
+            return (int)buffer[0];
+        }
         public string ReadString(int byteLength, NetworkStream stream)
         {
             byte[] bytes = new byte[byteLength];
@@ -255,6 +282,24 @@ namespace One_Night_Ultimate_Werewolf
                 var obj = binForm.Deserialize(memStream);
                 return obj;
             }
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // Host
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Name = "Host";
+            this.Load += new System.EventHandler(this.Host_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void Host_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

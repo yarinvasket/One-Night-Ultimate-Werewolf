@@ -189,7 +189,8 @@ namespace One_Night_Ultimate_Werewolf
                 pcards[i] = new PictureBox
                 {
                     Image = img,
-                    Size = img.Size
+                    Size = img.Size,
+                    Tag = (byte)i
                 };
                 pcards[i].Location = new Point(w / 2 - pcards[i].Width / 2 + (int)(h * Math.Sin(2 * Math.PI * (i + 1) / (p + 1)) / 3), h / 2 - pcards[i].Height / 2 + (int)(h * Math.Cos(2 * Math.PI * (i + 1) / (p + 1)) / 3));
                 if (pcards[i].Location.X > w / 2 - pcards[i].Width / 2)
@@ -364,6 +365,7 @@ namespace One_Night_Ultimate_Werewolf
 
                     Thread t = new Thread(() =>
                     {
+                        
                         stream.Read(new byte[] { 0 }, 0, 1);
                         this.Invoke(new InvokeDelegate(WakeUp));
 
@@ -396,23 +398,23 @@ namespace One_Night_Ultimate_Werewolf
             Thread t = new Thread(() =>
             {
                 stream.Read(new byte[] { 0 }, 0, 1);//client's turn 
-                
-                    
-                    Invoke(new InvokeDelegate(() =>
+
+
+                Invoke(new InvokeDelegate(() =>
+                {
+                    WakeUp();
+                    if (role != "Tanner" && role != "Hunter")
                     {
-                        WakeUp(); 
-                        if (role != "Tanner" && role != "Hunter")
-                        {
-                            in10.Text = 8.ToString();
-                            sec = 8;
-                            in10.Show();
-                            CheckRole();
-                            timer.Start();
-                            night.Hide();
-                            iscurrentturn = true;
-                        }
-                    }));
-                
+                        in10.Text = 8.ToString();
+                        sec = 8;
+                        in10.Show();
+                        CheckRole();
+                        timer.Start();
+                        night.Hide();
+                        iscurrentturn = true;
+                    }
+                }));
+
 
                 //Invoke(new InvokeDelegate(() =>
                 //{
@@ -545,7 +547,35 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void Doppelganger()
         {
+            for (int i = 0; i < players.Count; i++)
+            {
+                pcards[i].Click += DoppelgangerClick;
+            }
+        }
+        public void DoppelgangerClick(object sender, EventArgs args)
+        {
+            PictureBox card = (PictureBox)sender;
+            byte i = (byte)card.Tag;
 
+            SendByte(i);
+
+            string role = ReadString(20);
+            Image newcard = StrToImg(role);
+
+            pcards[i].Image = newcard;
+            for (int j = 0; j < players.Count; j++)
+            {
+                pcards[j].Click -= DoppelgangerClick;
+            }
+
+        }
+        public void SendInt(int num)
+        {
+            this.stream.Write(new byte[1] { (byte)num }, 0, 1);
+        }
+        public void SendByte(byte num)
+        {
+            this.stream.Write(new byte[1] { (byte)num }, 0, 1);
         }
         public void Minion()
         {
@@ -661,7 +691,6 @@ namespace One_Night_Ultimate_Werewolf
 
             return Properties.Resources.Troublemaker;
         }
-
         public string ReadString(int byteLength)
         {
             byte[] bytes = new byte[byteLength];
@@ -673,6 +702,24 @@ namespace One_Night_Ultimate_Werewolf
         {
             byte[] buffer = Encoding.UTF8.GetBytes(str);
             stream.Write(buffer, 0, buffer.Length);
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // Client
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Name = "Client";
+            this.Load += new System.EventHandler(this.Client_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void Client_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
