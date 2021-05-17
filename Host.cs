@@ -27,7 +27,8 @@ namespace One_Night_Ultimate_Werewolf
         private string[] deck = { "Doppelganger", "Hunter", "Tanner", "Insomniac", "Drunk", "Troublemaker", "Robber", "Seer", "Mason", "Mason", "Minion", "Werewolf", "Werewolf" };
         private TextBox console;
         private Thread playerReciever;
-
+        private int ind = 0;
+        private Timer turn;
         public Host()
         {
             this.FormClosing += One_Night_Ultimate_Werewolf.Menu.OnClose;
@@ -129,34 +130,50 @@ namespace One_Night_Ultimate_Werewolf
                     }
                     catch { }
                 }
-                
-                deck = new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac" }; 
-                Thread.Sleep(players.Count*750);
-                for (int i = 0; i < deck.Length; i++)
+
+                deck = new string[] { "Doppelganger", "Werewolf", "Minion", "Mason", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac" };
+
+                Invoke(new InvokeDelegate(() =>
                 {
-                    for (int j = 0; j < players.Count; j++)
+                    turn = new Timer();
+                    turn.Tick += DoTurn;
+                    turn.Interval = 8000;
+                    turn.Start();
+                }));
+
+            });
+            t.Start();
+        }
+
+        public void DoTurn(object sender, EventArgs args)
+        {
+            for (int j = 0; j < players.Count; j++)
+            {
+                if (players[j].role == deck[ind])
+                {
+                    try
                     {
-                        if (players[j].role == deck[i])
-                        {
-                            try
-                            {
-                                players[j].stream.Write(new byte[] { 0 }, 0, 1);
-                            }
-                            catch { }
-
-                            if (i == 0)
-                            {
-                                byte player = ReceiveByte(j);
-                                string role = players[player].role;
-                                WriteString(role, players[j].stream);
-                            }
-                        }
+                        players[j].stream.Write(new byte[] { 0 }, 0, 1);
                     }
-                    Thread.Sleep(8000);
-                    
+                    catch { }
+                    if (ind == 0)
+                    {
+
+                        Doppelganger(j);
+                    }
+                    else if (ind == 1 || ind == 2)
+                    {
+                        Werewolf(j);
+                    }
+                    else if (ind == 3)
+                    {
+                        Mason(j);
+                    }
                 }
-
-
+            }
+            if (ind == 8)
+            {
+                turn.Stop();
                 for (int j = 0; j < players.Count; j++)
                 {
                     try
@@ -165,14 +182,140 @@ namespace One_Night_Ultimate_Werewolf
                     }
                     catch { }
                 }
-
-
-            });
-            t.Start();
-
+            }
+            else
+            {
+                ind++;
+            }
 
         }
+        public void Doppelganger(int clientind)
+        {
+            byte player = ReceiveByte(clientind);
+            string role = players[player].role;
+            WriteString(role, clientind);
 
+            players[clientind].role = "Doppel" + role;
+        }
+
+        public void Werewolf(int clientind)
+        {
+            string werewolves = " ";
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (i != clientind && players[i].role == "Werewolf")
+                {
+                    werewolves += i + " ";
+                }
+            }
+
+            WriteString(werewolves, clientind);
+
+            if (werewolves==" ")
+            {
+                byte ind = ReceiveByte(1);
+                WriteString(middleCards[ind], clientind);
+            }
+        }
+        public void Minion()
+        {
+
+        }
+        public void Mason(int clientind)
+        {
+            string masons = " ";
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (i != clientind && players[i].role == "Mason")
+                {
+                    masons += i + " ";
+                }
+            }
+
+            WriteString(masons, clientind);
+        }
+        public void Seer()
+        {
+
+        }
+        public void Robber()
+        {
+
+        }
+        public void Troublemaker()
+        {
+
+        }
+        public void Drunk()
+        {
+
+        }
+        public void Insomniac()
+        {
+
+        }
+        public void CheckRole(object roleobj)
+        {
+            string role = (string)roleobj;
+
+            if (role == "Werewolf")
+            {
+                //Werewolf();
+            }
+            else
+            {
+                if (role == "Mason")
+                {
+                    //Mason();
+                }
+                else
+                {
+                    if (role == "Doppelganger")
+                    {
+                        Doppelganger(0);
+                    }
+                    else
+                    {
+                        if (role == "Minion")
+                        {
+                            Minion();
+                        }
+                        else
+                        {
+                            if (role == "Troublemaker")
+                            {
+                                Troublemaker();
+                            }
+                            else
+                            {
+                                if (role == "Drunk")
+                                {
+                                    Drunk();
+                                }
+                                else
+                                {
+                                    if (role == "Seer")
+                                    {
+                                        Seer();
+                                    }
+                                    else
+                                    {
+                                        if (role == "Robber")
+                                        {
+                                            Robber();
+                                        }
+                                        else
+                                        {
+                                            Insomniac();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public static void Shuffle<T>(T[] arr)
         {
             for (int i = 0; i < arr.Length; i++)
@@ -210,8 +353,9 @@ namespace One_Night_Ultimate_Werewolf
                         i--;
                     }
                 }
-                WriteString(names, stream);
+
                 players.Add(new Player(client, stream, name));
+                WriteString(names, players.Count - 1);
             }
         }
 
@@ -251,10 +395,10 @@ namespace One_Night_Ultimate_Werewolf
             return System.Text.Encoding.UTF8.GetString(bytes, 0, length);
         }
 
-        public void WriteString(string str, NetworkStream stream)
+        public void WriteString(string str, int clientid)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(str);
-            stream.Write(buffer, 0, buffer.Length);
+            players[clientid].stream.Write(buffer, 0, buffer.Length);
         }
 
         public static void AddText(Control control, string text)
