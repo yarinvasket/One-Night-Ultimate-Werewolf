@@ -303,22 +303,6 @@ namespace One_Night_Ultimate_Werewolf
                 if (sec == 3)
                 {
                     in10.ForeColor = Color.Red;
-
-                    if (role == "Robber")
-                    {
-                        for (int i = 0; i < pcards.Length; i++)
-                        {
-                            if (pcards[i].Image != back)
-                            {
-                                pcards[i].Image = back;
-                                pcards[i].Size = back.Size;
-                            }
-                        }
-                        Image img = StrToImg(this.robbedcard);
-                        img = Resize(img, w / 16, h * 41 / 270);
-                        card.Image = img;
-                        card.Size = img.Size;
-                    }
                 }
                 in10.Text = sec.ToString();
             }
@@ -326,41 +310,6 @@ namespace One_Night_Ultimate_Werewolf
             {
                 if (iscurrentturn)
                 {
-                    if (role == "Insomnic")
-                    {
-                        Image img = Properties.Resources.Back;
-                        img = Resize(img, w / 16, h * 41 / 270);
-                        card.Image = img;
-                        card.Size = img.Size;
-                    }
-                    else
-                    {
-                        if (role == "Robber")
-                        {
-
-                            card.Image = back;
-                            card.Size = back.Size;
-                        }
-                        else
-                        {
-                            if (role == "Minion" || role == "Werewolf")
-                            {
-                                for (int i = 0; i < pcards.Length; i++)
-                                {
-                                    if (pcards[i].Image != back)
-                                    {
-                                        pcards[i].Image = back;
-                                        pcards[i].Size = back.Size;
-                                    }
-                                }
-                                if (role == "Werewolf")
-                                {
-                                    card.Image = back;
-                                    card.Size = back.Size;
-                                }
-                            }
-                        }
-                    }
                     iscurrentturn = false;
                     for (int i = 0; i < players.Count; i++)
                     {
@@ -369,6 +318,11 @@ namespace One_Night_Ultimate_Werewolf
                             pcards[i].Image = back;
                             pcards[i].Size = back.Size;
                         }
+                    }
+                    if (card.Image != Properties.Resources.Back)
+                    {
+                        card.Image = back;
+                        card.Size = back.Size;
                     }
                     GotoSleep();
 
@@ -423,32 +377,6 @@ namespace One_Night_Ultimate_Werewolf
                         iscurrentturn = true;
                     }
                 }));
-
-
-                //Invoke(new InvokeDelegate(() =>
-                //{
-                //    BackgroundImage = null;
-                //    for (int i = 0; i < Controls.Count; i++)
-                //    {
-                //        if (Controls[i].Text != "Night has fallen over the city...")
-                //        {
-                //            Controls[i].Show();
-                //        }
-                //        else
-                //        {
-                //            iscurrentturn = true;
-                //            Controls[i].Text = "It is your turn";
-                //            in10.Text = 8.ToString();
-                //            sec = 8;
-                //            in10.Show();
-                //            CheckRole();
-                //            timer.Start();
-                //        }
-                //    }
-                //}));
-
-
-
             });
             t.Start();
         }
@@ -628,22 +556,22 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void RobCard(object sender, EventArgs argss)
         {
-            //PictureBox robbedcard = (PictureBox)sender;
-            //for (int i = 0; i < players.Count; i++)
-            //{
-            //    pcards[i].Click -= RobCard;
+            PictureBox robbedcard = (PictureBox)sender;
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (pcards[i].Location.X == robbedcard.Location.X)
+                {
+                    SendInt(i);
+                }
+                pcards[i].Click -= RobCard;
+            }
 
-            //    if (pcards[i].Equals(robbedcard))
-            //    {
-            //        stream.Write(new byte[] {(byte)i },0,1);
-            //    }
-            //}
-            //this.robbedcard= ReadString(20);
+            string card = ReadString(20);
 
-            //Image img = StrToImg(this.robbedcard);
-            //img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            //robbedcard.Image = img;
-            //robbedcard.Size = img.Size;
+            Image img = StrToImg(card);
+            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            this.card.Image = img;
+            this.card.Size = img.Size;
 
         }
         public void WereWolf()

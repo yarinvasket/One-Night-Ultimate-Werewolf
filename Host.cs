@@ -169,6 +169,10 @@ namespace One_Night_Ultimate_Werewolf
                     {
                         Mason(j);
                     }
+                    else if (ind == 5)
+                    {
+                        Robber(j);
+                    }
                 }
             }
             if (ind == 8)
@@ -192,6 +196,10 @@ namespace One_Night_Ultimate_Werewolf
         public void Doppelganger(int clientind)
         {
             byte player = ReceiveByte(clientind);
+            if (player >= clientind)
+            {
+                player++;
+            }
             string role = players[player].role;
             WriteString(role, clientind);
 
@@ -211,7 +219,7 @@ namespace One_Night_Ultimate_Werewolf
 
             WriteString(werewolves, clientind);
 
-            if (werewolves==" ")
+            if (players[clientind].role == "Werewolf" && werewolves == " ") 
             {
                 byte ind = ReceiveByte(1);
                 WriteString(middleCards[ind], clientind);
@@ -238,9 +246,16 @@ namespace One_Night_Ultimate_Werewolf
         {
 
         }
-        public void Robber()
+        public void Robber(int clientind)
         {
-
+            int ind = ReceiveInt(10);
+            if (ind >= clientind)
+            {
+                ind++;
+            }
+            string role = players[ind].role;
+            WriteString(role, clientind);
+            players[clientind].role = role;
         }
         public void Troublemaker()
         {
@@ -302,7 +317,7 @@ namespace One_Night_Ultimate_Werewolf
                                     {
                                         if (role == "Robber")
                                         {
-                                            Robber();
+                                            //Robber();
                                         }
                                         else
                                         {
