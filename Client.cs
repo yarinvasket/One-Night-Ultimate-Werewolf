@@ -38,9 +38,9 @@ namespace One_Night_Ultimate_Werewolf
         private Label yourTurn;
         private Timer timer;
         private bool iscurrentturn;
-        private string robbedcard;
-        Image back;
-
+        private Image back;
+        private Timer t;
+        private int index;
         public Client(string username, string ip)
         {
             this.username = username;
@@ -311,12 +311,41 @@ namespace One_Night_Ultimate_Werewolf
                 if (iscurrentturn)
                 {
                     iscurrentturn = false;
-                    for (int i = 0; i < players.Count; i++)
+                    if (role == "Werewolf")
                     {
-                        if (pcards[i].Image!= Properties.Resources.Back)
+                        for (int i = 0; i < players.Count; i++)
                         {
-                            pcards[i].Image = back;
-                            pcards[i].Size = back.Size;
+                            
+                            if (pcards[i].Image != Properties.Resources.Back)
+                            {
+                                pcards[i].Image = back;
+                                pcards[i].Size = back.Size;
+                            }
+                            if (i < 3 )
+                            {
+                                if (midcards[i].Image != Properties.Resources.Back)
+                                {
+                                    midcards[i].Image = back;
+                                    midcards[i].Size = back.Size;
+                                }
+                                midcards[i].Click -= WatchCard;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < players.Count; i++)
+                        {
+                            if (pcards[i].Image != Properties.Resources.Back)
+                            {
+                                pcards[i].Image = back;
+                                pcards[i].Size = back.Size;
+                            }
+                            if (i < 3 && midcards[i].Image != Properties.Resources.Back)
+                            {
+                                midcards[i].Image = back;
+                                midcards[i].Size = back.Size;
+                            }
                         }
                     }
                     if (card.Image != Properties.Resources.Back)
@@ -468,12 +497,11 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void Insomniac()
         {
-            //string newcard= ReadString(20);
-            //Image img = StrToImg(newcard);
-            //img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            //card.Image = img;
-            //card.Size = img.Size;
-
+            string card = ReadString(20);
+            Image img = StrToImg(card);
+            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            this.card.Image = img;
+            this.card.Size = img.Size;
         }
         public void Robber()
         {
@@ -481,6 +509,25 @@ namespace One_Night_Ultimate_Werewolf
             {
                 pcards[i].Click += RobCard;
             }
+        }
+        public void RobCard(object sender, EventArgs args)
+        {
+            PictureBox robbedcard = (PictureBox)sender;
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (pcards[i].Location.X == robbedcard.Location.X)
+                {
+                    SendInt(i);
+                }
+                pcards[i].Click -= RobCard;
+            }
+
+            string card = ReadString(20);
+
+            Image img = StrToImg(card);
+            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            this.card.Image = img;
+            this.card.Size = img.Size;
         }
         public void Doppelganger()
         {
@@ -534,7 +581,47 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void Drunk()
         {
+            for (int i = 0; i < 3; i++)
+            {
+                midcards[i].Click += DrunkCard;
+            }
+        }
+        public void DrunkCard(object sender, EventArgs args)
+        {
+            PictureBox clicked = (PictureBox)sender;
+            for (int i = 0; i < 3; i++)
+            {
+                if (midcards[i].Location.X == clicked.Location.X)
+                {
+                    SendInt(i);
+                    index = i;
+                }
+                midcards[i].Click -= DrunkCard;
+            }
 
+            t = new Timer();
+            t.Interval = 25;
+            t.Tick += Animation;
+            t.Start();
+          
+        }
+
+        public void Animation(object sender, EventArgs args)
+        {
+            //card.Location = new Point(w / 2 - card.Size.Width / 2, (5 * h) / 6 - card.Size.Height / 2);
+
+            if (midcards[index].Location.Y < ((5 * h) / 6 - card.Size.Height / 2))
+            {
+                int x = midcards[index].Location.X < w / 2 - card.Size.Width / 2 ? Math.Abs(midcards[index].Location.X - (w / 2 - card.Size.Width / 2)) / 20 : -Math.Abs(midcards[index].Location.X - (w / 2 - card.Size.Width / 2)) / 20;
+                int y = Math.Abs(midcards[index].Location.Y - ((5 * h) / 6 - card.Size.Height / 2)) / 20 + 1;
+                midcards[index].Location = new Point(midcards[index].Location.X + x + 1, midcards[index].Location.Y + y);
+                card.Location = new Point(card.Location.X - x, card.Location.Y - y);
+            }
+            else
+            {
+                
+                t.Stop();
+            }
         }
         public void Seer()
         {
@@ -554,26 +641,7 @@ namespace One_Night_Ultimate_Werewolf
                 pcards[int.Parse(index[i])].Image = img;
             }
         }
-        public void RobCard(object sender, EventArgs argss)
-        {
-            PictureBox robbedcard = (PictureBox)sender;
-            for (int i = 0; i < players.Count; i++)
-            {
-                if (pcards[i].Location.X == robbedcard.Location.X)
-                {
-                    SendInt(i);
-                }
-                pcards[i].Click -= RobCard;
-            }
-
-            string card = ReadString(20);
-
-            Image img = StrToImg(card);
-            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            this.card.Image = img;
-            this.card.Size = img.Size;
-
-        }
+       
         public void WereWolf()
         {
             Image img = StrToImg("Werewolf");
@@ -588,13 +656,13 @@ namespace One_Night_Ultimate_Werewolf
                 pcards[int.Parse(index[i])].Image = img;
             }
 
-            if (index.Length == 2)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    midcards[i].Click += WatchCard;
-                }
-            }
+            //if (index.Length == 2)
+            //{
+            //    for (int i = 0; i < 3; i++)
+            //    {
+            //        midcards[i].Click += WatchCard;
+            //    }
+            //}
         }
         public void WatchCard(object sender, EventArgs args)
         {
@@ -608,6 +676,11 @@ namespace One_Night_Ultimate_Werewolf
             img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
 
             midcards[ind].Image = img;
+
+            for (int i = 0; i < 3; i++)
+            {
+                midcards[i].Click -= WatchCard;
+            }
         }
         public Image StrToImg(string str)
         {
