@@ -41,6 +41,7 @@ namespace One_Night_Ultimate_Werewolf
         private Image back;
         private Timer t;
         private int index;
+        private int seercount = 0;
         public Client(string username, string ip)
         {
             this.username = username;
@@ -315,13 +316,13 @@ namespace One_Night_Ultimate_Werewolf
                     {
                         for (int i = 0; i < players.Count; i++)
                         {
-                            
+
                             if (pcards[i].Image != Properties.Resources.Back)
                             {
                                 pcards[i].Image = back;
                                 pcards[i].Size = back.Size;
                             }
-                            if (i < 3 )
+                            if (i < 3)
                             {
                                 if (midcards[i].Image != Properties.Resources.Back)
                                 {
@@ -460,7 +461,8 @@ namespace One_Night_Ultimate_Werewolf
                             TroubleMaker();
                         }
                         else
-                        {   if (role =="Minion")
+                        {
+                            if (role == "Minion")
                             {
                                 Minion();
                             }
@@ -489,7 +491,7 @@ namespace One_Night_Ultimate_Werewolf
                                     }
                                 }
                             }
-                            
+
                         }
                     }
                 }
@@ -603,7 +605,7 @@ namespace One_Night_Ultimate_Werewolf
             t.Interval = 25;
             t.Tick += Animation;
             t.Start();
-          
+
         }
 
         public void Animation(object sender, EventArgs args)
@@ -619,13 +621,78 @@ namespace One_Night_Ultimate_Werewolf
             }
             else
             {
-                
+
                 t.Stop();
             }
         }
         public void Seer()
         {
+            for (int i = 0; i < pcards.Length; i++)
+            {
+                pcards[i].Click += SeerClick;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                midcards[i].Click += SeerClickMid;
+            }
+        }
+        public void SeerClick(object sender, EventArgs args)
+        {
+            PictureBox card = (PictureBox)sender;
+            byte i = (byte)card.Tag;
 
+            WriteString("a" + i);
+
+            role = ReadString(20);
+
+            Image newcard = StrToImg(role);
+            newcard = Resize(newcard, 2 * newcard.Width / 3, 2 * newcard.Height / 3);
+            pcards[i].Image = newcard;
+
+            for (int j = 0; j < players.Count; j++)
+            {
+                pcards[j].Click -= SeerClick;
+            }
+            for (int j = 0; j < 3; j++)
+            {
+                midcards[j].Click -= SeerClickMid;
+            }
+
+        }
+        public void SeerClickMid(object sender, EventArgs args)
+        {   
+            if (seercount == 0)
+            {
+                for (int j = 0; j < players.Count; j++)
+                {
+                    pcards[j].Click -= SeerClick;
+                }
+            }
+            
+            PictureBox card = (PictureBox)sender;
+            byte i = (byte)card.Tag;
+
+            WriteString(i.ToString());
+
+            role = ReadString(20);
+
+            Image newcard = StrToImg(role);
+            newcard = Resize(newcard, 2 * newcard.Width / 3, 2 * newcard.Height / 3);
+            midcards[i].Image = newcard;
+
+           
+            if (seercount == 1)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    midcards[j].Click -= SeerClickMid;
+                }
+            }
+            else
+            {
+                card.Click -= SeerClickMid;
+                seercount++;
+            }
         }
         public void Mason()
         {
@@ -641,7 +708,7 @@ namespace One_Night_Ultimate_Werewolf
                 pcards[int.Parse(index[i])].Image = img;
             }
         }
-       
+
         public void WereWolf()
         {
             Image img = StrToImg("Werewolf");

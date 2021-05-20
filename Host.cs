@@ -185,6 +185,10 @@ namespace One_Night_Ultimate_Werewolf
                     {
                         Drunk(j);
                     }
+                    else if (ind == 4)
+                    {
+                        Seer(j);
+                    }
                 }
             }
             if (ind == 8)
@@ -277,9 +281,32 @@ namespace One_Night_Ultimate_Werewolf
 
             WriteString(masons, clientind);
         }
-        public void Seer()
+        public void Seer(int clientind)
         {
+            string read = ReadString(10 , clientind); 
+            
+            
+            if (read[0].Equals('a'))
+            {
+                int player = int.Parse(read.Substring(1));
 
+                if (player >= clientind)
+                {
+                    player++;
+                }
+                string card = players[player].card;
+                WriteString(card, clientind);
+            }
+            else
+            {
+                int cardind = int.Parse(read);
+                string midcard = middleCards[cardind];
+                WriteString(midcard, clientind);
+
+                cardind = int.Parse(ReadString(10, clientind)); 
+                midcard = middleCards[cardind];
+                WriteString(midcard, clientind);
+            }
         }
         public void Robber(int clientind)
         {
@@ -307,75 +334,77 @@ namespace One_Night_Ultimate_Werewolf
             string role = middleCards[ind];
             middleCards[ind] = "Drunk";
 
+            string card = players[clientind].card;
             players[clientind].card = role;
+            middleCards[ind] = card;
         }
         public void Insomniac(int clientind)
         {
             WriteString(players[clientind].card, clientind);
         }
 
-        public void CheckRole(object roleobj)
-        {
-            string role = (string)roleobj;
+        //public void CheckRole(object roleobj)
+        //{
+        //    string role = (string)roleobj;
 
-            if (role == "Werewolf")
-            {
-                //Werewolf();
-            }
-            else
-            {
-                if (role == "Mason")
-                {
-                    //Mason();
-                }
-                else
-                {
-                    if (role == "Doppelganger")
-                    {
-                        Doppelganger(0);
-                    }
-                    else
-                    {
-                        if (role == "Minion")
-                        {
-                            Minion();
-                        }
-                        else
-                        {
-                            if (role == "Troublemaker")
-                            {
-                                Troublemaker();
-                            }
-                            else
-                            {
-                                if (role == "Drunk")
-                                {
-                                   // Drunk();
-                                }
-                                else
-                                {
-                                    if (role == "Seer")
-                                    {
-                                        Seer();
-                                    }
-                                    else
-                                    {
-                                        if (role == "Robber")
-                                        {
-                                            //Robber();
-                                        }
-                                        else
-                                        {
-                                           // Insomniac();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //    if (role == "Werewolf")
+        //    {
+        //        //Werewolf();
+        //    }
+        //    else
+        //    {
+        //        if (role == "Mason")
+        //        {
+        //            //Mason();
+        //        }
+        //        else
+        //        {
+        //            if (role == "Doppelganger")
+        //            {
+        //                Doppelganger(0);
+        //            }
+        //            else
+        //            {
+        //                if (role == "Minion")
+        //                {
+        //                    Minion();
+        //                }
+        //                else
+        //                {
+        //                    if (role == "Troublemaker")
+        //                    {
+        //                        Troublemaker();
+        //                    }
+        //                    else
+        //                    {
+        //                        if (role == "Drunk")
+        //                        {
+        //                           // Drunk();
+        //                        }
+        //                        else
+        //                        {
+        //                            if (role == "Seer")
+        //                            {
+        //                                Seer();
+        //                            }
+        //                            else
+        //                            {
+        //                                if (role == "Robber")
+        //                                {
+        //                                    //Robber();
+        //                                }
+        //                                else
+        //                                {
+        //                                   // Insomniac();
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
         public static void Shuffle<T>(T[] arr)
         {
             for (int i = 0; i < arr.Length; i++)
@@ -450,10 +479,10 @@ namespace One_Night_Ultimate_Werewolf
             return (int)buffer[0];
         }
 
-        public string ReadString(int byteLength, NetworkStream stream)
+        public string ReadString(int byteLength, int clientind)
         {
             byte[] bytes = new byte[byteLength];
-            int length = stream.Read(bytes, 0, bytes.Length);
+            int length = players[clientind].stream.Read(bytes, 0, bytes.Length);
             return System.Text.Encoding.UTF8.GetString(bytes, 0, length);
         }
 
