@@ -243,7 +243,12 @@ namespace One_Night_Ultimate_Werewolf
 
             WriteString(werewolves, clientind);
 
-            //if (players[clientind].role == "Werewolf" && werewolves == " ") 
+            if (players[clientind].role == "Werewolf" && werewolves == " ")
+            {
+                int ind = ReceiveByte(clientind);
+                string card = middleCards[ind];
+                WriteString(card, clientind);
+            }
             //{
             //    //t = new  Thread(() =>
             //    //{

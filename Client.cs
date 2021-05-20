@@ -616,7 +616,7 @@ namespace One_Night_Ultimate_Werewolf
             {
                 int x = midcards[index].Location.X < w / 2 - card.Size.Width / 2 ? Math.Abs(midcards[index].Location.X - (w / 2 - card.Size.Width / 2)) / 20 : -Math.Abs(midcards[index].Location.X - (w / 2 - card.Size.Width / 2)) / 20;
                 int y = Math.Abs(midcards[index].Location.Y - ((5 * h) / 6 - card.Size.Height / 2)) / 20 + 1;
-                midcards[index].Location = new Point(midcards[index].Location.X + x + 1, midcards[index].Location.Y + y);
+                midcards[index].Location = new Point(midcards[index].Location.X + x, midcards[index].Location.Y + y);
                 card.Location = new Point(card.Location.X - x, card.Location.Y - y);
             }
             else
@@ -723,6 +723,13 @@ namespace One_Night_Ultimate_Werewolf
                 pcards[int.Parse(index[i])].Image = img;
             }
 
+            if (index.Length == 2)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    midcards[i].Click += WatchCard;
+                }
+            }
             //if (index.Length == 2)
             //{
             //    for (int i = 0; i < 3; i++)
@@ -734,15 +741,26 @@ namespace One_Night_Ultimate_Werewolf
         public void WatchCard(object sender, EventArgs args)
         {
             PictureBox card = (PictureBox)sender;
-
             byte ind = (byte)card.Tag;
+
             SendByte(ind);
 
-            string role = ReadString(20);
-            Image img = StrToImg(role);
-            img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+            role = ReadString(20);
 
-            midcards[ind].Image = img;
+            Image newcard = StrToImg(role);
+            newcard = Resize(newcard, 2 * newcard.Width / 3, 2 * newcard.Height / 3);
+            midcards[ind].Image = newcard;
+
+            //PictureBox card = (PictureBox)sender;
+
+            //byte ind = (byte)card.Tag;
+            //SendByte(ind);
+
+            //string role = ReadString(20);
+            //Image img = StrToImg(role);
+            //img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
+
+            //midcards[ind].Image = img;
 
             for (int i = 0; i < 3; i++)
             {
