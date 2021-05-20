@@ -41,7 +41,11 @@ namespace One_Night_Ultimate_Werewolf
         private Image back;
         private Timer t;
         private int index;
-        private int seercount = 0;
+        private int count = 0;
+        private int locx;
+        private int locy;
+        private PictureBox card1;
+        private PictureBox card2;
         public Client(string username, string ip)
         {
             this.username = username;
@@ -579,7 +583,55 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void TroubleMaker()
         {
+            for (int i = 0; i < pcards.Length; i++)
+            {
+                pcards[i].Click += TroublemakerClick;
+            }
+            card.Click += TroublemakerClick;
+        }
+        public void TroublemakerClick(object sender,EventArgs args)
+        {
+            PictureBox card = (PictureBox)sender;
+            card.Click -= TroublemakerClick;
+            if (count == 0)
+            {
+                card1 = card;
+                locx = card.Location.X;
+                locy = card.Location.Y;
+                count++; 
+                for (int j = 0; j < pcards.Length; j++)
+                {
+                    if (pcards[j].Location.X == card.Location.X && pcards[j].Location.Y == card.Location.Y)
+                    {
+                        SendByte((byte)j);
+                    }
+                }
+                if (card.Location.Y == this.card.Location.Y)
+                {
+                    SendByte((byte)pcards.Length);
+                }
+            }
+            else
+            {
+                card2 = card;
 
+                for (int j = 0; j < pcards.Length; j++)
+                {
+                    pcards[j].Click -= TroublemakerClick;
+                    if (pcards[j].Location.X==card.Location.X&& pcards[j].Location.Y == card.Location.Y)
+                    {
+                        SendByte((byte)j);
+                    }
+                }
+                if (card.Location.Y == this.card.Location.Y)
+                {
+                    SendByte((byte)pcards.Length);
+                }
+                t = new Timer();
+                t.Interval = 10;
+                t.Tick += Animation;
+                t.Start();
+            }
         }
         public void Drunk()
         {
@@ -600,9 +652,12 @@ namespace One_Night_Ultimate_Werewolf
                 }
                 midcards[i].Click -= DrunkCard;
             }
-
+            locx = card.Location.X;
+            locy = card.Location.Y;
+            card1 = card;
+            card2 = midcards[index];
             t = new Timer();
-            t.Interval = 25;
+            t.Interval = 15;
             t.Tick += Animation;
             t.Start();
 
@@ -610,14 +665,14 @@ namespace One_Night_Ultimate_Werewolf
 
         public void Animation(object sender, EventArgs args)
         {
-            //card.Location = new Point(w / 2 - card.Size.Width / 2, (5 * h) / 6 - card.Size.Height / 2);
-
-            if (midcards[index].Location.Y < ((5 * h) / 6 - card.Size.Height / 2))
+            if (Math.Abs(locy - card2.Location.Y) > 7 || Math.Abs(locx - card2.Location.X) > 7)
             {
-                int x = midcards[index].Location.X < w / 2 - card.Size.Width / 2 ? Math.Abs(midcards[index].Location.X - (w / 2 - card.Size.Width / 2)) / 20 : -Math.Abs(midcards[index].Location.X - (w / 2 - card.Size.Width / 2)) / 20;
-                int y = Math.Abs(midcards[index].Location.Y - ((5 * h) / 6 - card.Size.Height / 2)) / 20 + 1;
-                midcards[index].Location = new Point(midcards[index].Location.X + x, midcards[index].Location.Y + y);
-                card.Location = new Point(card.Location.X - x, card.Location.Y - y);
+
+                int x = card2.Location.X < locx ? Math.Abs(card2.Location.X - locx) / 20 + 1 + count % 2 : -Math.Abs(card2.Location.X - locx) / 20 - 1 - count % 2;
+                int y = card2.Location.Y < locy ? Math.Abs(card2.Location.Y - locy) / 20 + 1 + count%2 : -Math.Abs(card2.Location.Y - locy) / 20 - 1 - count % 2;
+                card2.Location = new Point(card2.Location.X + x, card2.Location.Y + y);
+                card1.Location = new Point(card1.Location.X - x, card1.Location.Y - y);
+                count++;
             }
             else
             {
@@ -661,7 +716,7 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void SeerClickMid(object sender, EventArgs args)
         {   
-            if (seercount == 0)
+            if (count == 0)
             {
                 for (int j = 0; j < players.Count; j++)
                 {
@@ -681,7 +736,7 @@ namespace One_Night_Ultimate_Werewolf
             midcards[i].Image = newcard;
 
            
-            if (seercount == 1)
+            if (count == 1)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -691,7 +746,7 @@ namespace One_Night_Ultimate_Werewolf
             else
             {
                 card.Click -= SeerClickMid;
-                seercount++;
+                count++;
             }
         }
         public void Mason()

@@ -83,6 +83,7 @@ namespace One_Night_Ultimate_Werewolf
             }*/
             playerReciever.Suspend();
             Controls.RemoveAt(Controls.Count - 1);
+            
             for (int i = 0; i < players.Count; i++)
             {
                 players[i].card = deck[i];
@@ -188,6 +189,10 @@ namespace One_Night_Ultimate_Werewolf
                     else if (ind == 4)
                     {
                         Seer(j);
+                    }
+                    else if (ind == 6)
+                    {
+                        Troublemaker(j);
                     }
                 }
             }
@@ -328,9 +333,36 @@ namespace One_Night_Ultimate_Werewolf
 
             players[clientind].card = role;
         }
-        public void Troublemaker()
+        public void Troublemaker(int clientind)
         {
+            byte ind1 = ReceiveByte(clientind);
+            byte ind2 = ReceiveByte(clientind);
+            if (ind1 >= clientind && ind1 != players.Count - 1)
+            {
+                ind1++;
+            }
+            else
+            {
+                if (ind1 == players.Count - 1)
+                {
+                    ind1 = (byte)clientind;
+                }
+            }
 
+            if (ind2 >= clientind && ind2 != players.Count - 1)
+            {
+                ind2++;
+            }
+            else
+            {
+                if (ind2 == players.Count - 1)
+                {
+                    ind2 = (byte)clientind;
+                }
+            }
+            string temp = players[ind1].card;
+            players[ind1].card = players[ind2].card;
+            players[ind2].card = temp;
         }
         public void Drunk(int clientind)
         {
