@@ -20,6 +20,7 @@ namespace One_Night_Ultimate_Werewolf
     {
         private string username;
         private string ip;
+        public Label instr;
         List<string> players;
         private Label connectedPlayers;
         private TcpClient client;
@@ -230,7 +231,7 @@ namespace One_Night_Ultimate_Werewolf
         public void SecondsToStart()
         {
             in10.Size = new Size(100, 50);
-            in10.Location = new Point(49 * w / 100, h / 3);
+            in10.Location = new Point(49 * w / 100, 21*h / 60);
             sec = 10;
             in10.Font = new Font("Arial", 24);
             in10.Text = sec.ToString();
@@ -285,19 +286,6 @@ namespace One_Night_Ultimate_Werewolf
                     }
                 }
             }
-
-            //BackgroundImage = null;
-            //for (int i = 0; i < Controls.Count; i++)
-            //{
-            //    Controls[i].Show();
-            //}
-            //in10.Text = 8.ToString();
-            //sec = 8;
-            //in10.Show();
-            //timer.Start();
-
-
-
         }
         private void Waiting10Secs(object sender, EventArgs args)
         {
@@ -442,54 +430,64 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void CheckRole()
         {
+            instr = new Label();
             if (role == "Werewolf")
             {
+                instr.Text = "These are the other werewolves.\nIf you are the only werewolf,    \nwatch one of the middle cards.";
                 WereWolf();
             }
             else
             {
                 if (role == "Mason")
                 {
+                    instr.Text = "This is the other mason.";
                     Mason();
                 }
                 else
                 {
                     if (role == "Doppelganger")
                     {
+                        instr.Text = "Choose a player's card,\nYou will play its role.";
                         Doppelganger();
                     }
                     else
                     {
                         if (role == "Troublemaker")
                         {
+                            instr.Text = "Choose two players' cards and switch them.";
                             TroubleMaker();
                         }
                         else
                         {
                             if (role == "Minion")
                             {
+                                instr.Text = "These are the werewolves.";
                                 Minion();
                             }
                             else
                             {
                                 if (role == "Drunk")
                                 {
+                                    instr.Text = "Choose a middle card and switch it with yours.";
                                     Drunk();
                                 }
                                 else
                                 {
                                     if (role == "Seer")
                                     {
+                                        instr.Text = "Choose 1 player's card and watch it \nor 2 middle cards and watch them.";
                                         Seer();
                                     }
                                     else
                                     {
                                         if (role == "Robber")
                                         {
+                                            instr.Text = "Choose a player's card,\nwatch it and switch it with yours.";
                                             Robber();
                                         }
                                         else
                                         {
+                                            instr.Text = "Watch your card.";
                                             Insomniac();
                                         }
                                     }
@@ -500,6 +498,12 @@ namespace One_Night_Ultimate_Werewolf
                     }
                 }
             }
+            string[] rows = instr.Text.Split('\n');
+            int i = rows.Length == 1 ? 0 : rows[0].Length > rows[1].Length ? 0 : 1;
+            instr.Location = new Point(w / 2 - 7 * rows[i].Length, 9*h / 32);
+            instr.Font = new Font(FontFamily.GenericMonospace, 18);
+            instr.Size = new Size(rows[i].Length * 18, rows.Length * h / 20);
+            Controls.Add(instr);
         }
         public void Insomniac()
         {
@@ -532,8 +536,18 @@ namespace One_Night_Ultimate_Werewolf
 
             Image img = StrToImg(card);
             img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            this.card.Image = img;
-            this.card.Size = img.Size;
+            //this.card.Image = img;
+            //this.card.Size = img.Size;
+            robbedcard.Image = img;
+            robbedcard.Size = img.Size;
+            locx = this.card.Location.X;
+            locy = this.card.Location.Y;
+            card1 = this.card;
+            card2 = robbedcard; 
+            t = new Timer();
+            t.Interval = 10;
+            t.Tick += Animation;
+            t.Start();
         }
         public void Doppelganger()
         {
@@ -753,8 +767,6 @@ namespace One_Night_Ultimate_Werewolf
         {
             Image img = StrToImg("Mason");
             img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            card.Image = img;
-            card.Size = img.Size;
 
             string Masons = ReadString(15);
             string[] index = Masons.Split(' ');
@@ -768,8 +780,6 @@ namespace One_Night_Ultimate_Werewolf
         {
             Image img = StrToImg("Werewolf");
             img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-            card.Image = img;
-            card.Size = img.Size;
 
             string werewolves = ReadString(15);
             string[] index = werewolves.Split(' ');
@@ -785,13 +795,6 @@ namespace One_Night_Ultimate_Werewolf
                     midcards[i].Click += WatchCard;
                 }
             }
-            //if (index.Length == 2)
-            //{
-            //    for (int i = 0; i < 3; i++)
-            //    {
-            //        midcards[i].Click += WatchCard;
-            //    }
-            //}
         }
         public void WatchCard(object sender, EventArgs args)
         {
@@ -804,19 +807,8 @@ namespace One_Night_Ultimate_Werewolf
 
             Image newcard = StrToImg(role);
             newcard = Resize(newcard, 2 * newcard.Width / 3, 2 * newcard.Height / 3);
-            midcards[ind].Image = newcard;
-
-            //PictureBox card = (PictureBox)sender;
-
-            //byte ind = (byte)card.Tag;
-            //SendByte(ind);
-
-            //string role = ReadString(20);
-            //Image img = StrToImg(role);
-            //img = Resize(img, 2 * img.Width / 3, 2 * img.Height / 3);
-
-            //midcards[ind].Image = img;
-
+            card.Image = newcard;
+            card.Size = newcard.Size;
             for (int i = 0; i < 3; i++)
             {
                 midcards[i].Click -= WatchCard;

@@ -83,7 +83,13 @@ namespace One_Night_Ultimate_Werewolf
             }*/
             playerReciever.Suspend();
             Controls.RemoveAt(Controls.Count - 1);
+
+            //players[0].card = "Doppelganger";
+            //players[0].role = "Doppelganger";
+            //byte[] bytes1 = Encoding.UTF8.GetBytes('\0' + "Doppelganger");
             
+            //players[0].stream.Write(bytes1, 0, bytes1.Length);
+           
             for (int i = 0; i < players.Count; i++)
             {
                 players[i].card = deck[i];
@@ -149,10 +155,10 @@ namespace One_Night_Ultimate_Werewolf
 
         public void DoTurn(object sender, EventArgs args)
         {
-            //if (ind == 2)
-            //{
-            //    //t.Abort();
-            //}
+            if ((ind == 2 || ind == 5) && t != null) 
+            {
+                t.Abort();
+            }
             for (int j = 0; j < players.Count; j++)
             {
                 if (players[j].role == deck[ind])
@@ -247,25 +253,20 @@ namespace One_Night_Ultimate_Werewolf
             }
 
             WriteString(werewolves, clientind);
-
             if (players[clientind].role == "Werewolf" && werewolves == " ")
             {
+                t = new Thread(() =>
+                {
                 int ind = ReceiveByte(clientind);
                 string card = middleCards[ind];
-                WriteString(card, clientind);
+                Invoke(new InvokeDelegate(() =>
+                {
+                    WriteString(card, clientind);
+                }));
+                });
+                t.Start();
             }
-            //{
-            //    //t = new  Thread(() =>
-            //    //{
-            //    //    Invoke(new InvokeDelegate(()=>
-            //    //    {
-            //            byte ind = ReceiveByte(1);
-            //            WriteString(middleCards[ind], clientind);
-            //    //    }));
-            //    //});
-            //    //t.Start();
-                
-            //}
+
         }
         public void Minion()
         {
@@ -293,30 +294,33 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void Seer(int clientind)
         {
-            string read = ReadString(10 , clientind); 
-            
-            
-            if (read[0].Equals('a'))
+            t = new Thread(() =>
             {
-                int player = int.Parse(read.Substring(1));
+                string read = ReadString(10, clientind);
 
-                if (player >= clientind)
+                if (read[0].Equals('a'))
                 {
-                    player++;
-                }
-                string card = players[player].card;
-                WriteString(card, clientind);
-            }
-            else
-            {
-                int cardind = int.Parse(read);
-                string midcard = middleCards[cardind];
-                WriteString(midcard, clientind);
+                    int player = int.Parse(read.Substring(1));
 
-                cardind = int.Parse(ReadString(10, clientind)); 
-                midcard = middleCards[cardind];
-                WriteString(midcard, clientind);
-            }
+                    if (player >= clientind)
+                    {
+                        player++;
+                    }
+                    string card = players[player].card;
+                    WriteString(card, clientind);
+                }
+                else
+                {
+                    int cardind = int.Parse(read);
+                    string midcard = middleCards[cardind];
+                    WriteString(midcard, clientind);
+
+                    cardind = int.Parse(ReadString(10, clientind));
+                    midcard = middleCards[cardind];
+                    WriteString(midcard, clientind);
+                }
+            });
+            t.Start();
         }
         public void Robber(int clientind)
         {
@@ -366,8 +370,8 @@ namespace One_Night_Ultimate_Werewolf
         }
         public void Drunk(int clientind)
         {
-            int ind = ReceiveInt(10); 
-            
+            int ind = ReceiveInt(10);
+
             string role = middleCards[ind];
             middleCards[ind] = "Drunk";
 
